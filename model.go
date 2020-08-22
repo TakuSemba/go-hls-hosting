@@ -1,23 +1,23 @@
 package main
 
 type MasterPlaylist struct {
-	Uri            string
+	Path           string
 	Tags           []string
 	MediaPlaylists []MediaPlaylist
 }
 
 type MediaPlaylist struct {
-	Uri      string
+	Path     string
 	Tags     []string
 	Segments []Segment
 }
 
 type Segment struct {
-	Uri string
+	Path string
 }
 
 type Loader interface {
 	loadMasterPlaylist() ([]byte, error)
-	loadMediaPlaylist(id int) ([]byte, error)
-	loadSegment(id int) ([]byte, error)
+	loadMediaPlaylist(index int) ([]byte, error)
+	loadSegment(mediaPlaylistIndex, segmentIndex int) ([]byte, error)
 }

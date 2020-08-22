@@ -8,18 +8,6 @@ import (
 
 func main() {
 
-	parser := Parser{}
-	original, err := parser.Parse("/Users/takusemba/Downloads/sample-bbb/output/master.m3u8")
-	if err != nil {
-		return
-	}
-
-	handler := Handler{
-		VodLoader:   &VodLoader{MasterPlaylist: original},
-		LiveLoader:  &LiveLoader{MasterPlaylist: original},
-		ChaseLoader: &ChaseLoader{MasterPlaylist: original},
-	}
-
 	// Echo instance
 	e := echo.New()
 
@@ -27,11 +15,19 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
+	// Parse Playlist
+	parser := NewParser()
+	original, err := parser.Parse("/Users/takusemba/Downloads/sample-bbb/output/master.m3u8")
+	if err != nil {
+		e.Logger.Fatal(err)
+	}
+	handler := NewHandler(original)
+
 	// Routes
 	e.GET("/hello", hello)
 	e.GET("/vod/playlist.m3u8", handler.vodMasterPlaylist)
-	e.GET("/vod/:path/playlist.m3u8", handler.vodMediaPlaylist)
-	e.GET("/vod/:path/*", handler.vodSegments)
+	e.GET("/vod/:index/playlist.m3u8", handler.vodMediaPlaylist)
+	e.GET("/vod/:index/:segment", handler.vodSegments)
 	e.GET("/live/playlist.m3u8", handler.liveMasterPlaylist)
 	e.GET("/chase/playlist.m3u8", handler.chaseMasterPlaylist)
 
