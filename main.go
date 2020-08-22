@@ -12,6 +12,7 @@ func main() {
 	e := echo.New()
 
 	// Middleware
+	e.Use(middleware.CORS())
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
