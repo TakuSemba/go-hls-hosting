@@ -1,7 +1,8 @@
-package main
+package load
 
 import (
 	"fmt"
+	"github.com/TakuSemba/go-media-hosting/parse"
 	"io/ioutil"
 	"path/filepath"
 	"strconv"
@@ -9,10 +10,10 @@ import (
 )
 
 type VodLoader struct {
-	MasterPlaylist MasterPlaylist
+	MasterPlaylist parse.MasterPlaylist
 }
 
-func (v *VodLoader) loadMasterPlaylist() ([]byte, error) {
+func (v *VodLoader) LoadMasterPlaylist() ([]byte, error) {
 	var masterPlaylist []byte
 	var mediaPlaylistCount = 0
 	for _, tag := range v.MasterPlaylist.Tags {
@@ -27,7 +28,7 @@ func (v *VodLoader) loadMasterPlaylist() ([]byte, error) {
 	return masterPlaylist, nil
 }
 
-func (v *VodLoader) loadMediaPlaylist(index int) ([]byte, error) {
+func (v *VodLoader) LoadMediaPlaylist(index int) ([]byte, error) {
 	var mediaPlaylist []byte
 	var tsCount = 0
 	for _, tag := range v.MasterPlaylist.MediaPlaylists[index].Tags {
@@ -42,7 +43,7 @@ func (v *VodLoader) loadMediaPlaylist(index int) ([]byte, error) {
 	return mediaPlaylist, nil
 }
 
-func (v *VodLoader) loadSegment(mediaPlaylistIndex, segmentIndex int) ([]byte, error) {
+func (v *VodLoader) LoadSegment(mediaPlaylistIndex, segmentIndex int) ([]byte, error) {
 	mediaPlaylistPath := v.MasterPlaylist.MediaPlaylists[mediaPlaylistIndex].Path
 	segmentPath := v.MasterPlaylist.MediaPlaylists[mediaPlaylistIndex].Segments[segmentIndex].Path
 	fmt.Println(filepath.Join(filepath.Dir(mediaPlaylistPath), segmentPath))

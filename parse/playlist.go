@@ -1,4 +1,4 @@
-package main
+package parse
 
 type MasterPlaylist struct {
 	Path           string
@@ -14,10 +14,4 @@ type MediaPlaylist struct {
 
 type Segment struct {
 	Path string
-}
-
-type Loader interface {
-	loadMasterPlaylist() ([]byte, error)
-	loadMediaPlaylist(index int) ([]byte, error)
-	loadSegment(mediaPlaylistIndex, segmentIndex int) ([]byte, error)
 }
