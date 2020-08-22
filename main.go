@@ -24,9 +24,9 @@ func main() {
 	if err != nil {
 		e.Logger.Fatal(err)
 	}
-	vodLoader := load.VodLoader{MasterPlaylist: original}
-	liveLoader := load.LiveLoader{MasterPlaylist: original}
-	chaseLoader := load.ChaseLoader{MasterPlaylist: original}
+	vodLoader := load.NewVodLoader(original)
+	liveLoader := load.NewLiveLoader(original)
+	chaseLoader := load.NewChaseLoader(original)
 	handler := handle.NewHandler(vodLoader, liveLoader, chaseLoader)
 
 	// Routes

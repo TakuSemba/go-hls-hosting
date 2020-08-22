@@ -11,6 +11,10 @@ type VodLoader struct {
 	MasterPlaylist parse.MasterPlaylist
 }
 
+func NewVodLoader(original parse.MasterPlaylist) VodLoader {
+	return VodLoader{MasterPlaylist: original}
+}
+
 func (v *VodLoader) LoadMediaPlaylist(index int) ([]byte, error) {
 	var mediaPlaylist []byte
 	var tsCount = 0
