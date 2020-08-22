@@ -25,7 +25,7 @@ func (v *ChaseLoader) LoadMediaPlaylist(index int) ([]byte, error) {
 	var mediaPlaylist []byte
 	var segmentIndex = 0
 	aggregatedTimeMs := float64(0)
-	elapsedTimeMs := float64(time.Now().UnixNano()/1e6 - v.StartedAt.UnixNano()/1e6)
+	elapsedTimeMs := float64(time.Now().Sub(v.StartedAt).Milliseconds())
 	for _, tag := range v.MasterPlaylist.MediaPlaylists[index].Tags {
 		if strings.HasPrefix(tag, "#EXTINF") {
 			if aggregatedTimeMs < elapsedTimeMs {

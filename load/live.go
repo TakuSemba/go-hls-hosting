@@ -18,7 +18,7 @@ func NewLiveLoader(original parse.MasterPlaylist) LiveLoader {
 	return LiveLoader{
 		DefaultLoader:    NewDefaultLoader(original),
 		MasterPlaylist:   original,
-		StartedAt:        time.Now(),
+		StartedAt:        time.Now().Add(time.Duration(-9 * 60 * 1000 * 1000 * 1000)),
 		WindowDurationMs: 20 * 1000,
 	}
 }
@@ -26,7 +26,7 @@ func NewLiveLoader(original parse.MasterPlaylist) LiveLoader {
 func (v *LiveLoader) LoadMediaPlaylist(index int) ([]byte, error) {
 	var mediaPlaylist []byte
 	totalDurationMs := v.MasterPlaylist.MediaPlaylists[index].TotalDurationMs
-	elapsedTimeMs := time.Now().UnixNano()/1e6 - v.StartedAt.UnixNano()/1e6
+	elapsedTimeMs := time.Now().Sub(v.StartedAt).Milliseconds()
 	adjustedElapsedTimeMs := float64(uint64(elapsedTimeMs) % uint64(totalDurationMs))
 
 	segmentIndex := -1
@@ -46,6 +46,7 @@ func (v *LiveLoader) LoadMediaPlaylist(index int) ([]byte, error) {
 				mediaPlaylist = append(mediaPlaylist, '\n')
 				aggregatedTimeMs += v.MasterPlaylist.MediaPlaylists[index].Segments[segmentIndex].DurationMs
 				segmentIndex += 1
+				segmentIndex = segmentIndex % len(v.MasterPlaylist.MediaPlaylists[index].Segments)
 			}
 		} else if strings.HasPrefix(tag, "#EXT-X-ENDLIST") {
 			continue
