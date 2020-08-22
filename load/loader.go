@@ -19,16 +19,20 @@ type DefaultLoader struct {
 	MasterPlaylist parse.MasterPlaylist
 }
 
+func NewDefaultLoader(original parse.MasterPlaylist) DefaultLoader {
+	return DefaultLoader{MasterPlaylist: original}
+}
+
 func (v *DefaultLoader) LoadMasterPlaylist() ([]byte, error) {
 	var masterPlaylist []byte
-	var mediaPlaylistCount = 0
+	var mediaPlaylistIndex = 0
 	for _, tag := range v.MasterPlaylist.Tags {
 		masterPlaylist = append(masterPlaylist, tag...)
 		masterPlaylist = append(masterPlaylist, '\n')
 		if strings.HasPrefix(tag, "#EXT-X-STREAM-INF") {
-			masterPlaylist = append(masterPlaylist, strconv.Itoa(mediaPlaylistCount)+"/playlist.m3u8"...)
+			masterPlaylist = append(masterPlaylist, strconv.Itoa(mediaPlaylistIndex)+"/playlist.m3u8"...)
 			masterPlaylist = append(masterPlaylist, '\n')
-			mediaPlaylistCount += 1
+			mediaPlaylistIndex += 1
 		}
 	}
 	return masterPlaylist, nil

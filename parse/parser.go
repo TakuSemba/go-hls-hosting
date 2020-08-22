@@ -3,9 +3,11 @@ package parse
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"path/filepath"
+	"strconv"
 	"strings"
 )
 
@@ -81,6 +83,7 @@ func (p *Parser) ParseMediaPlaylist(path string) (MediaPlaylist, error) {
 	reader := bufio.NewReader(bytes.NewReader(data))
 	var tags []string
 	var segments []Segment
+	var totalDurationMs float64
 	for {
 		readBytes, _, err := reader.ReadLine()
 		line := string(readBytes)
@@ -100,14 +103,28 @@ func (p *Parser) ParseMediaPlaylist(path string) (MediaPlaylist, error) {
 			tags = append(tags, line)
 		}
 		if !strings.HasPrefix(line, "#") {
-			segment := Segment{Path: line}
-			segments = append(segments, segment)
+			for i := len(tags) - 1; i >= 0; i-- {
+				tag := tags[i]
+				if strings.HasPrefix(tag, "#EXT") {
+					duration, err := strconv.ParseFloat(tag[8:len(tag)-1], 64)
+					if err != nil {
+						fmt.Println(err)
+						return MediaPlaylist{}, nil
+					}
+					durationMs := duration * 1000
+					segment := Segment{Path: line, DurationMs: durationMs}
+					segments = append(segments, segment)
+					totalDurationMs += durationMs
+					break
+				}
+			}
 		}
 	}
 	mediaPlaylist := MediaPlaylist{
-		Path:     path,
-		Tags:     tags,
-		Segments: segments,
+		Path:            path,
+		Tags:            tags,
+		Segments:        segments,
+		TotalDurationMs: totalDurationMs,
 	}
 	return mediaPlaylist, nil
 }

@@ -87,12 +87,12 @@ func TestParseMediaPlaylist(t *testing.T) {
 		t.Errorf("exspected: %v, actual: %v", tags, mediaPlaylist.Tags)
 	}
 	segments := []Segment{
-		{Path: "segment-0.ts"},
-		{Path: "segment-1.ts"},
-		{Path: "segment-2.ts"},
-		{Path: "segment-3.ts"},
-		{Path: "segment-4.ts"},
-		{Path: "segment-5.ts"},
+		{Path: "segment-0.ts", DurationMs: 7.500000},
+		{Path: "segment-1.ts", DurationMs: 6.916667},
+		{Path: "segment-2.ts", DurationMs: 6.375000},
+		{Path: "segment-3.ts", DurationMs: 7.291667},
+		{Path: "segment-4.ts", DurationMs: 7.500000},
+		{Path: "segment-5.ts", DurationMs: 7.500000},
 	}
 	if !reflect.DeepEqual(mediaPlaylist.Segments, segments) {
 		t.Errorf("exspected: %v, actual: %v", segments, mediaPlaylist.Segments)
