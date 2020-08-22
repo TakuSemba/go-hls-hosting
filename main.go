@@ -34,7 +34,11 @@ func main() {
 	e.GET("/vod/:index/playlist.m3u8", handler.VodMediaPlaylist)
 	e.GET("/vod/:index/:segment", handler.VodSegments)
 	e.GET("/live/playlist.m3u8", handler.LiveMasterPlaylist)
+	e.GET("/live/:index/playlist.m3u8", handler.LiveMediaPlaylist)
+	e.GET("/live/:index/:segment", handler.LiveSegments)
 	e.GET("/chase/playlist.m3u8", handler.ChaseMasterPlaylist)
+	e.GET("/chase/:index/playlist.m3u8", handler.ChaseMediaPlaylist)
+	e.GET("/chase/:index/:segment", handler.ChaseSegments)
 
 	// Start server
 	e.Logger.Fatal(e.Start(":1323"))
