@@ -20,7 +20,7 @@ func NewChaseLoader(original parse.MasterPlaylist) ChaseLoader {
 		DefaultLoader:           NewDefaultLoader(original),
 		MasterPlaylist:          original,
 		StartedAt:               time.Now(),
-		InitialWindowDurationMs: 40 * 1000,
+		InitialWindowDurationMs: 20 * 1000,
 	}
 }
 
