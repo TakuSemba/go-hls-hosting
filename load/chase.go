@@ -40,6 +40,14 @@ func (v *ChaseLoader) LoadMediaPlaylist(index int) ([]byte, error) {
 			mediaPlaylist = append(mediaPlaylist, "#EXT-X-PLAYLIST-TYPE:EVENT"...)
 			mediaPlaylist = append(mediaPlaylist, '\n')
 
+		case strings.HasPrefix(tag, media.TagDiscontinuity):
+			// ignore if next segment is out of window.
+			if windowDurationMs < aggregatedTimeMs+original.Segments[segmentIndex].DurationMs {
+				continue
+			}
+			mediaPlaylist = append(mediaPlaylist, tag...)
+			mediaPlaylist = append(mediaPlaylist, '\n')
+
 		// append #EXTINF / #EXT-X-BYTERANGE.
 		case strings.HasPrefix(tag, media.TagMediaDuration) || strings.HasPrefix(tag, media.TagByteRange):
 			segment := original.Segments[segmentIndex]

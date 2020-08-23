@@ -95,16 +95,8 @@ func (v *LiveLoader) LoadMediaPlaylist(index int) ([]byte, error) {
 				if segmentIndex == firstSegmentIndex {
 					continue
 				}
-				// ignore if previous added segment's discontinuity sequence != current discontinuity sequence.
-				if original.Segments[segmentIndex-1].DiscontinuitySequence != discontinuityCount-1 {
-					continue
-				}
 				// ignore if next segment is out of window.
 				if v.WindowDurationMs < aggregatedTimeMs+original.Segments[segmentIndex].DurationMs {
-					continue
-				}
-				// ignore if next segment's discontinuity sequence != current discontinuity sequence + 1.
-				if original.Segments[segmentIndex].DiscontinuitySequence != discontinuityCount {
 					continue
 				}
 				mediaPlaylist = append(mediaPlaylist, tag...)
