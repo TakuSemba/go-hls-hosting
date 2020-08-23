@@ -75,6 +75,7 @@ func TestParseMediaPlaylist(t *testing.T) {
 		"#EXT-X-INDEPENDENT-SEGMENTS",
 		"#EXT-X-TARGETDURATION:8",
 		"#EXT-X-MEDIA-SEQUENCE:0",
+		"#EXT-X-DISCONTINUITY-SEQUENCE:0",
 		"#EXTINF:7.500000,",
 		"#EXTINF:6.916667,",
 		"#EXTINF:6.375000,",
@@ -87,12 +88,12 @@ func TestParseMediaPlaylist(t *testing.T) {
 		t.Errorf("exspected: %v, actual: %v", tags, mediaPlaylist.Tags)
 	}
 	segments := []Segment{
-		{Path: "segment-0.ts", DurationMs: 7.500000},
-		{Path: "segment-1.ts", DurationMs: 6.916667},
-		{Path: "segment-2.ts", DurationMs: 6.375000},
-		{Path: "segment-3.ts", DurationMs: 7.291667},
-		{Path: "segment-4.ts", DurationMs: 7.500000},
-		{Path: "segment-5.ts", DurationMs: 7.500000},
+		{Path: "segment-0.ts", DurationMs: 7500.000, DiscontinuitySequence: 0, FileExtension: ".ts", ContainerFormat: Ts},
+		{Path: "segment-1.ts", DurationMs: 6916.667, DiscontinuitySequence: 0, FileExtension: ".ts", ContainerFormat: Ts},
+		{Path: "segment-2.ts", DurationMs: 6375.000, DiscontinuitySequence: 0, FileExtension: ".ts", ContainerFormat: Ts},
+		{Path: "segment-3.ts", DurationMs: 7291.667, DiscontinuitySequence: 0, FileExtension: ".ts", ContainerFormat: Ts},
+		{Path: "segment-4.ts", DurationMs: 7500.000, DiscontinuitySequence: 0, FileExtension: ".ts", ContainerFormat: Ts},
+		{Path: "segment-5.ts", DurationMs: 7500.000, DiscontinuitySequence: 0, FileExtension: ".ts", ContainerFormat: Ts},
 	}
 	if !reflect.DeepEqual(mediaPlaylist.Segments, segments) {
 		t.Errorf("exspected: %v, actual: %v", segments, mediaPlaylist.Segments)

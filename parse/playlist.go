@@ -1,5 +1,12 @@
 package parse
 
+type ContainerFormat int
+
+const (
+	Ts ContainerFormat = iota
+	Fmp4
+)
+
 type MasterPlaylist struct {
 	Path           string
 	Tags           []string
@@ -18,4 +25,6 @@ type Segment struct {
 	Path                  string
 	DurationMs            float64
 	DiscontinuitySequence int
+	FileExtension         string
+	ContainerFormat       ContainerFormat
 }

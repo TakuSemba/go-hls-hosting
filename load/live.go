@@ -57,7 +57,7 @@ func (v *LiveLoader) LoadMediaPlaylist(index int) ([]byte, error) {
 			if aggregatedTimeMs < v.WindowDurationMs {
 				mediaPlaylist = append(mediaPlaylist, tag...)
 				mediaPlaylist = append(mediaPlaylist, '\n')
-				mediaPlaylist = append(mediaPlaylist, strconv.Itoa(segmentIndex)+".ts"...)
+				mediaPlaylist = append(mediaPlaylist, strconv.Itoa(segmentIndex)+original.Segments[segmentIndex].FileExtension...)
 				mediaPlaylist = append(mediaPlaylist, '\n')
 				aggregatedTimeMs += original.Segments[segmentIndex].DurationMs
 				segmentIndex += 1

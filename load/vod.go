@@ -25,6 +25,7 @@ func (v *VodLoader) LoadMediaPlaylist(index int) ([]byte, error) {
 		mediaPlaylist = append(mediaPlaylist, tag...)
 		mediaPlaylist = append(mediaPlaylist, '\n')
 		if strings.HasPrefix(tag, "#EXTINF") {
+			// Consider mp4
 			mediaPlaylist = append(mediaPlaylist, strconv.Itoa(tsCount)+".ts"...)
 			mediaPlaylist = append(mediaPlaylist, '\n')
 			tsCount += 1

@@ -1,7 +1,6 @@
 package load
 
 import (
-	"fmt"
 	"github.com/TakuSemba/go-media-hosting/parse"
 	"io/ioutil"
 	"path/filepath"
@@ -40,7 +39,6 @@ func (v *DefaultLoader) LoadMasterPlaylist() ([]byte, error) {
 func (v *DefaultLoader) LoadSegment(mediaPlaylistIndex, segmentIndex int) ([]byte, error) {
 	mediaPlaylistPath := v.MasterPlaylist.MediaPlaylists[mediaPlaylistIndex].Path
 	segmentPath := v.MasterPlaylist.MediaPlaylists[mediaPlaylistIndex].Segments[segmentIndex].Path
-	fmt.Println(filepath.Join(filepath.Dir(mediaPlaylistPath), segmentPath))
 	segment, err := ioutil.ReadFile(filepath.Join(filepath.Dir(mediaPlaylistPath), segmentPath))
 	if err != nil {
 		return []byte{}, nil
