@@ -3,6 +3,7 @@ package parse
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"path/filepath"
@@ -96,6 +97,7 @@ func (p *Parser) ParseMediaPlaylist(path string) (MediaPlaylist, error) {
 	for {
 		readBytes, _, err := reader.ReadLine()
 		line := string(readBytes)
+		fmt.Println(line)
 		if err == io.EOF {
 			break
 		}
@@ -125,46 +127,70 @@ func (p *Parser) ParseMediaPlaylist(path string) (MediaPlaylist, error) {
 				discontinuitySequence += 1
 			}
 		}
+		// handle media line.
 		if !strings.HasPrefix(line, "#") {
+
+			// extract last #EXTINF tag.
+			var lastInfTag string
 			for i := len(tags) - 1; i >= 0; i-- {
-				lastTag := tags[i]
-				if strings.HasPrefix(lastTag, "#EXT") {
-					duration, err := strconv.ParseFloat(lastTag[8:len(lastTag)-1], 64)
-					if err != nil {
-						return MediaPlaylist{}, nil
-					}
-					durationMs := duration * 1000
-					fileExtension := line[strings.LastIndex(line, "."):]
-
-					// extract container format.
-					var containerFormat ContainerFormat
-					switch {
-					case strings.HasSuffix(line, TsFileExtension):
-						containerFormat = Ts
-					case strings.HasSuffix(line, Mp4FileExtension):
-						containerFormat = Fmp4
-					case strings.HasPrefix(line[len(line)-4:], M4FileExtensionPrefix):
-						containerFormat = Fmp4
-					case strings.HasPrefix(line[len(line)-5:], Mp4FileExtensionPrefix):
-						containerFormat = Fmp4
-					case strings.HasPrefix(line[len(line)-5:], CmfFileExtensionPrefix):
-						containerFormat = Fmp4
-					default:
-						return MediaPlaylist{}, nil
-					}
-
-					segment := Segment{
-						Path:                  line,
-						DurationMs:            durationMs,
-						DiscontinuitySequence: discontinuitySequence,
-						FileExtension:         fileExtension,
-						ContainerFormat:       containerFormat,
-					}
-					segments = append(segments, segment)
-					totalDurationMs += durationMs
+				tag := tags[i]
+				if strings.HasPrefix(tag, "#EXTINF") {
+					lastInfTag = tag
 					break
 				}
 			}
+
+			// extract duration.
+			fmt.Println("lastInfTag")
+			fmt.Println(lastInfTag)
+			duration, err := strconv.ParseFloat(lastInfTag[8:len(lastInfTag)-1], 64)
+			if err != nil {
+				return MediaPlaylist{}, nil
+			}
+			durationMs := duration * 1000
+
+			// extract file extension.
+			fileExtension := line[strings.LastIndex(line, "."):]
+
+			// extract request type.
+			var lastTag string
+			if 0 < len(tags) {
+				lastTag = tags[len(tags)-1]
+			}
+			var requestType RequestType
+			if strings.HasPrefix(lastTag, "#EXT-X-BYTERANGE") {
+				requestType = ByteRange
+			} else {
+				requestType = SegmentBySegment
+			}
+
+			// extract container format.
+			var containerFormat ContainerFormat
+			switch {
+			case strings.HasSuffix(line, TsFileExtension):
+				containerFormat = Ts
+			case strings.HasSuffix(line, Mp4FileExtension):
+				containerFormat = Fmp4
+			case strings.HasPrefix(line[len(line)-4:], M4FileExtensionPrefix):
+				containerFormat = Fmp4
+			case strings.HasPrefix(line[len(line)-5:], Mp4FileExtensionPrefix):
+				containerFormat = Fmp4
+			case strings.HasPrefix(line[len(line)-5:], CmfFileExtensionPrefix):
+				containerFormat = Fmp4
+			default:
+				return MediaPlaylist{}, nil
+			}
+
+			segment := Segment{
+				Path:                  line,
+				DurationMs:            durationMs,
+				DiscontinuitySequence: discontinuitySequence,
+				FileExtension:         fileExtension,
+				ContainerFormat:       containerFormat,
+				RequestType:           requestType,
+			}
+			segments = append(segments, segment)
+			totalDurationMs += durationMs
 		}
 	}
 	mediaPlaylist := MediaPlaylist{

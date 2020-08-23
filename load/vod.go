@@ -20,15 +20,33 @@ func NewVodLoader(original parse.MasterPlaylist) VodLoader {
 
 func (v *VodLoader) LoadMediaPlaylist(index int) ([]byte, error) {
 	var mediaPlaylist []byte
-	var tsCount = 0
+	var segmentIndex = 0
 	for _, tag := range v.MasterPlaylist.MediaPlaylists[index].Tags {
-		mediaPlaylist = append(mediaPlaylist, tag...)
-		mediaPlaylist = append(mediaPlaylist, '\n')
-		if strings.HasPrefix(tag, "#EXTINF") {
-			// Consider mp4
-			mediaPlaylist = append(mediaPlaylist, strconv.Itoa(tsCount)+".ts"...)
+		switch {
+		// append #EXTINF / #EXT-X-BYTERANGE
+		case strings.HasPrefix(tag, "#EXTINF") || strings.HasPrefix(tag, "#EXT-X-BYTERANGE"):
+			mediaPlaylist = append(mediaPlaylist, tag...)
 			mediaPlaylist = append(mediaPlaylist, '\n')
-			tsCount += 1
+			segment := v.MasterPlaylist.MediaPlaylists[index].Segments[segmentIndex]
+			switch segment.RequestType {
+			// append media line for segment
+			case parse.SegmentBySegment:
+				if strings.HasPrefix(tag, "#EXTINF") {
+					mediaPlaylist = append(mediaPlaylist, strconv.Itoa(segmentIndex)+segment.FileExtension...)
+					mediaPlaylist = append(mediaPlaylist, '\n')
+					segmentIndex += 1
+				}
+
+			// append media line for byte-range
+			case parse.ByteRange:
+				if strings.HasPrefix(tag, "#EXT-X-BYTERANGE") {
+					mediaPlaylist = append(mediaPlaylist, strconv.Itoa(segment.DiscontinuitySequence)+segment.FileExtension...)
+					mediaPlaylist = append(mediaPlaylist, '\n')
+				}
+			}
+		default:
+			mediaPlaylist = append(mediaPlaylist, tag...)
+			mediaPlaylist = append(mediaPlaylist, '\n')
 		}
 	}
 	return mediaPlaylist, nil

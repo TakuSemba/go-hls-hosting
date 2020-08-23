@@ -39,30 +39,52 @@ func (v *LiveLoader) LoadMediaPlaylist(index int) ([]byte, error) {
 	}
 
 	aggregatedTimeMs = float64(0)
+	segment := original.Segments[segmentIndex]
 	for _, tag := range original.Tags {
 		switch {
+		// append #EXT-X-PLAYLIST-TYPE:EVENT
 		case strings.HasPrefix(tag, "#EXT-X-PLAYLIST-TYPE"):
 			mediaPlaylist = append(mediaPlaylist, "#EXT-X-PLAYLIST-TYPE:EVENT"...)
 			mediaPlaylist = append(mediaPlaylist, '\n')
+
+		// append #EXT-X-MEDIA-SEQUENCE:xx
 		case strings.HasPrefix(tag, "#EXT-X-MEDIA-SEQUENCE"):
 			mediaSequence := "#EXT-X-MEDIA-SEQUENCE:" + strconv.Itoa(segmentIndex)
 			mediaPlaylist = append(mediaPlaylist, mediaSequence...)
 			mediaPlaylist = append(mediaPlaylist, '\n')
+
+		// append #EXT-X-DISCONTINUITY-SEQUENCE:xx
 		case strings.HasPrefix(tag, "#EXT-X-DISCONTINUITY-SEQUENCE"):
-			discontinuitySequence := repeatedWindowCount*original.TotalDiscontinuityCount + original.Segments[segmentIndex].DiscontinuitySequence
+			discontinuitySequence := repeatedWindowCount*original.TotalDiscontinuityCount + segment.DiscontinuitySequence
 			mediaSequence := "#EXT-X-DISCONTINUITY-SEQUENCE:" + strconv.Itoa(discontinuitySequence)
 			mediaPlaylist = append(mediaPlaylist, mediaSequence...)
 			mediaPlaylist = append(mediaPlaylist, '\n')
-		case strings.HasPrefix(tag, "#EXTINF"):
-			if aggregatedTimeMs < v.WindowDurationMs {
-				mediaPlaylist = append(mediaPlaylist, tag...)
-				mediaPlaylist = append(mediaPlaylist, '\n')
-				mediaPlaylist = append(mediaPlaylist, strconv.Itoa(segmentIndex)+original.Segments[segmentIndex].FileExtension...)
-				mediaPlaylist = append(mediaPlaylist, '\n')
-				aggregatedTimeMs += original.Segments[segmentIndex].DurationMs
-				segmentIndex += 1
-				segmentIndex = segmentIndex % len(original.Segments)
+
+		// append #EXTINF / #EXT-X-BYTERANGE
+		case strings.HasPrefix(tag, "#EXTINF") || strings.HasPrefix(tag, "#EXT-X-BYTERANGE"):
+			mediaPlaylist = append(mediaPlaylist, tag...)
+			mediaPlaylist = append(mediaPlaylist, '\n')
+
+			switch segment.RequestType {
+			// append media line for segment
+			case parse.SegmentBySegment:
+				if strings.HasPrefix(tag, "#EXTINF") && aggregatedTimeMs < v.WindowDurationMs {
+					mediaPlaylist = append(mediaPlaylist, strconv.Itoa(segmentIndex)+segment.FileExtension...)
+					mediaPlaylist = append(mediaPlaylist, '\n')
+					aggregatedTimeMs += segment.DurationMs
+					segmentIndex += 1
+					segmentIndex = segmentIndex % len(original.Segments)
+				}
+			// append media line for byte-range
+			case parse.ByteRange:
+				if strings.HasPrefix(tag, "#EXT-X-BYTERANGE") && aggregatedTimeMs < v.WindowDurationMs {
+					mediaPlaylist = append(mediaPlaylist, strconv.Itoa(segment.DiscontinuitySequence)+segment.FileExtension...)
+					mediaPlaylist = append(mediaPlaylist, '\n')
+					aggregatedTimeMs += segment.DurationMs
+				}
 			}
+
+		// ignore #EXT-X-ENDLIST
 		case strings.HasPrefix(tag, "#EXT-X-ENDLIST"):
 			continue
 		default:

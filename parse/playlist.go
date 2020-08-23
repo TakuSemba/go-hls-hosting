@@ -7,6 +7,13 @@ const (
 	Fmp4
 )
 
+type RequestType int
+
+const (
+	SegmentBySegment RequestType = iota
+	ByteRange
+)
+
 type MasterPlaylist struct {
 	Path           string
 	Tags           []string
@@ -27,4 +34,5 @@ type Segment struct {
 	DiscontinuitySequence int
 	FileExtension         string
 	ContainerFormat       ContainerFormat
+	RequestType           RequestType
 }

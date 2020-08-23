@@ -6,16 +6,21 @@ import (
 )
 
 type FakeFileReader struct {
-	ReadBytes []byte
+	expectedPath string
+	ReadBytes    []byte
 }
 
 func (f *FakeFileReader) FakeReadFile(path string) ([]byte, error) {
+	if path != f.expectedPath {
+		return []byte{}, nil
+	}
 	return f.ReadBytes, nil
 }
 
 func TestParseMasterPlaylist(t *testing.T) {
 	testPath := "testMasterPlaylist.m3u8"
 	fileReader := FakeFileReader{
+		expectedPath: testPath,
 		ReadBytes: []byte(
 			"#EXTM3U\n" +
 				"#EXT-X-VERSION:4\n" +
@@ -41,6 +46,7 @@ func TestParseMasterPlaylist(t *testing.T) {
 func TestParseMediaPlaylist(t *testing.T) {
 	testPath := "testMediaPlaylist.m3u8"
 	fileReader := FakeFileReader{
+		expectedPath: testPath,
 		ReadBytes: []byte(
 			"#EXTM3U\n" +
 				"#EXT-X-VERSION:4\n" +
@@ -88,12 +94,12 @@ func TestParseMediaPlaylist(t *testing.T) {
 		t.Errorf("exspected: %v, actual: %v", tags, mediaPlaylist.Tags)
 	}
 	segments := []Segment{
-		{Path: "segment-0.ts", DurationMs: 7500.000, DiscontinuitySequence: 0, FileExtension: ".ts", ContainerFormat: Ts},
-		{Path: "segment-1.ts", DurationMs: 6916.667, DiscontinuitySequence: 0, FileExtension: ".ts", ContainerFormat: Ts},
-		{Path: "segment-2.ts", DurationMs: 6375.000, DiscontinuitySequence: 0, FileExtension: ".ts", ContainerFormat: Ts},
-		{Path: "segment-3.ts", DurationMs: 7291.667, DiscontinuitySequence: 0, FileExtension: ".ts", ContainerFormat: Ts},
-		{Path: "segment-4.ts", DurationMs: 7500.000, DiscontinuitySequence: 0, FileExtension: ".ts", ContainerFormat: Ts},
-		{Path: "segment-5.ts", DurationMs: 7500.000, DiscontinuitySequence: 0, FileExtension: ".ts", ContainerFormat: Ts},
+		{Path: "segment-0.ts", DurationMs: 7500.000, DiscontinuitySequence: 0, FileExtension: ".ts", ContainerFormat: Ts, RequestType: SegmentBySegment},
+		{Path: "segment-1.ts", DurationMs: 6916.667, DiscontinuitySequence: 0, FileExtension: ".ts", ContainerFormat: Ts, RequestType: SegmentBySegment},
+		{Path: "segment-2.ts", DurationMs: 6375.000, DiscontinuitySequence: 0, FileExtension: ".ts", ContainerFormat: Ts, RequestType: SegmentBySegment},
+		{Path: "segment-3.ts", DurationMs: 7291.667, DiscontinuitySequence: 0, FileExtension: ".ts", ContainerFormat: Ts, RequestType: SegmentBySegment},
+		{Path: "segment-4.ts", DurationMs: 7500.000, DiscontinuitySequence: 0, FileExtension: ".ts", ContainerFormat: Ts, RequestType: SegmentBySegment},
+		{Path: "segment-5.ts", DurationMs: 7500.000, DiscontinuitySequence: 0, FileExtension: ".ts", ContainerFormat: Ts, RequestType: SegmentBySegment},
 	}
 	if !reflect.DeepEqual(mediaPlaylist.Segments, segments) {
 		t.Errorf("exspected: %v, actual: %v", segments, mediaPlaylist.Segments)
