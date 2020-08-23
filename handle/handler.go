@@ -2,18 +2,11 @@ package handle
 
 import (
 	"github.com/TakuSemba/go-media-hosting/load"
+	"github.com/TakuSemba/go-media-hosting/media"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"strconv"
 	"strings"
-)
-
-const (
-	TsFileExtension        = ".ts"
-	Mp4FileExtension       = ".mp4"
-	M4FileExtensionPrefix  = ".m4"
-	Mp4FileExtensionPrefix = ".mp4"
-	CmfFileExtensionPrefix = ".cmf"
 )
 
 const (
@@ -109,15 +102,15 @@ func (h *Handler) loadSegment(loader load.Loader, c echo.Context) error {
 
 	var contentType string
 	switch {
-	case strings.HasSuffix(segmentName, TsFileExtension):
+	case strings.HasSuffix(segmentName, media.TsFileExtension):
 		contentType = ContentTypeMpeg2Ts
-	case strings.HasSuffix(segmentName, Mp4FileExtension):
+	case strings.HasSuffix(segmentName, media.Mp4FileExtension):
 		contentType = ContentTypeMP4
-	case strings.HasPrefix(segmentName[len(segmentName)-4:], M4FileExtensionPrefix):
+	case strings.HasPrefix(segmentName[len(segmentName)-4:], media.M4FileExtensionPrefix):
 		contentType = ContentTypeMP4
-	case strings.HasPrefix(segmentName[len(segmentName)-5:], Mp4FileExtensionPrefix):
+	case strings.HasPrefix(segmentName[len(segmentName)-5:], media.Mp4FileExtensionPrefix):
 		contentType = ContentTypeMP4
-	case strings.HasPrefix(segmentName[len(segmentName)-5:], CmfFileExtensionPrefix):
+	case strings.HasPrefix(segmentName[len(segmentName)-5:], media.CmfFileExtensionPrefix):
 		contentType = ContentTypeMP4
 	default:
 		return c.String(http.StatusBadRequest, "failed to load Segment.")

@@ -3,19 +3,12 @@ package parse
 import (
 	"bufio"
 	"bytes"
+	"github.com/TakuSemba/go-media-hosting/media"
 	"io"
 	"io/ioutil"
 	"path/filepath"
 	"strconv"
 	"strings"
-)
-
-const (
-	TsFileExtension        = ".ts"
-	Mp4FileExtension       = ".mp4"
-	M4FileExtensionPrefix  = ".m4"
-	Mp4FileExtensionPrefix = ".mp4"
-	CmfFileExtensionPrefix = ".cmf"
 )
 
 type ReadFile func(path string) ([]byte, error)
@@ -63,7 +56,7 @@ func (p *Parser) ParseMasterPlaylist(path string) (MasterPlaylist, error) {
 		if strings.HasPrefix(line, "# ") {
 			continue
 		}
-		if strings.HasPrefix(line, "#EXT") {
+		if strings.HasPrefix(line, media.TagPrefix) {
 			tags = append(tags, line)
 		}
 		if !strings.HasPrefix(line, "#") {
@@ -109,19 +102,19 @@ func (p *Parser) ParseMediaPlaylist(path string) (MediaPlaylist, error) {
 			continue
 		}
 		// append EXT-X-MEDIA-SEQUENCE, EXT-X-DISCONTINUITY-SEQUENCE while ignoring pre-existed those tags.
-		if strings.HasPrefix(line, "#EXT-X-MEDIA-SEQUENCE") {
+		if strings.HasPrefix(line, media.TagMediaSequence) {
 			continue
 		}
-		if strings.HasPrefix(line, "#EXT-X-DISCONTINUITY-SEQUENCE") {
+		if strings.HasPrefix(line, media.TagDiscontinuitySequence) {
 			continue
 		}
-		if strings.HasPrefix(line, "#EXT") {
+		if strings.HasPrefix(line, media.TagPrefix) {
 			tags = append(tags, line)
-			if strings.HasPrefix(line, "#EXT-X-TARGETDURATION") {
-				tags = append(tags, "#EXT-X-MEDIA-SEQUENCE:0")
-				tags = append(tags, "#EXT-X-DISCONTINUITY-SEQUENCE:0")
+			if strings.HasPrefix(line, media.TagTargetDuration) {
+				tags = append(tags, media.TagMediaSequence+":0")
+				tags = append(tags, media.TagDiscontinuitySequence+":0")
 			}
-			if strings.HasPrefix(line, "#EXT-X-DISCONTINUITY") {
+			if strings.HasPrefix(line, media.TagDiscontinuity) {
 				discontinuitySequence += 1
 			}
 		}
@@ -132,7 +125,7 @@ func (p *Parser) ParseMediaPlaylist(path string) (MediaPlaylist, error) {
 			var lastInfTag string
 			for i := len(tags) - 1; i >= 0; i-- {
 				tag := tags[i]
-				if strings.HasPrefix(tag, "#EXTINF") {
+				if strings.HasPrefix(tag, media.TagMediaDuration) {
 					lastInfTag = tag
 					break
 				}
@@ -154,7 +147,7 @@ func (p *Parser) ParseMediaPlaylist(path string) (MediaPlaylist, error) {
 				lastTag = tags[len(tags)-1]
 			}
 			var requestType RequestType
-			if strings.HasPrefix(lastTag, "#EXT-X-BYTERANGE") {
+			if strings.HasPrefix(lastTag, media.TagByteRange) {
 				requestType = ByteRange
 			} else {
 				requestType = SegmentBySegment
@@ -163,15 +156,15 @@ func (p *Parser) ParseMediaPlaylist(path string) (MediaPlaylist, error) {
 			// extract container format.
 			var containerFormat ContainerFormat
 			switch {
-			case strings.HasSuffix(line, TsFileExtension):
+			case strings.HasSuffix(line, media.TsFileExtension):
 				containerFormat = Ts
-			case strings.HasSuffix(line, Mp4FileExtension):
+			case strings.HasSuffix(line, media.Mp4FileExtension):
 				containerFormat = Fmp4
-			case strings.HasPrefix(line[len(line)-4:], M4FileExtensionPrefix):
+			case strings.HasPrefix(line[len(line)-4:], media.M4FileExtensionPrefix):
 				containerFormat = Fmp4
-			case strings.HasPrefix(line[len(line)-5:], Mp4FileExtensionPrefix):
+			case strings.HasPrefix(line[len(line)-5:], media.Mp4FileExtensionPrefix):
 				containerFormat = Fmp4
-			case strings.HasPrefix(line[len(line)-5:], CmfFileExtensionPrefix):
+			case strings.HasPrefix(line[len(line)-5:], media.CmfFileExtensionPrefix):
 				containerFormat = Fmp4
 			default:
 				return MediaPlaylist{}, nil

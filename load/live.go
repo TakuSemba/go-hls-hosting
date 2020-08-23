@@ -1,6 +1,7 @@
 package load
 
 import (
+	"github.com/TakuSemba/go-media-hosting/media"
 	"github.com/TakuSemba/go-media-hosting/parse"
 	"strconv"
 	"strings"
@@ -48,27 +49,27 @@ func (v *LiveLoader) LoadMediaPlaylist(index int) ([]byte, error) {
 			mediaPlaylist = append(mediaPlaylist, '\n')
 
 		// append #EXT-X-MEDIA-SEQUENCE:xx
-		case strings.HasPrefix(tag, "#EXT-X-MEDIA-SEQUENCE"):
+		case strings.HasPrefix(tag, media.TagMediaSequence):
 			mediaSequence := "#EXT-X-MEDIA-SEQUENCE:" + strconv.Itoa(segmentIndex)
 			mediaPlaylist = append(mediaPlaylist, mediaSequence...)
 			mediaPlaylist = append(mediaPlaylist, '\n')
 
 		// append #EXT-X-DISCONTINUITY-SEQUENCE:xx
-		case strings.HasPrefix(tag, "#EXT-X-DISCONTINUITY-SEQUENCE"):
+		case strings.HasPrefix(tag, media.TagDiscontinuitySequence):
 			discontinuitySequence := repeatedWindowCount*original.TotalDiscontinuityCount + segment.DiscontinuitySequence
 			mediaSequence := "#EXT-X-DISCONTINUITY-SEQUENCE:" + strconv.Itoa(discontinuitySequence)
 			mediaPlaylist = append(mediaPlaylist, mediaSequence...)
 			mediaPlaylist = append(mediaPlaylist, '\n')
 
 		// append #EXTINF / #EXT-X-BYTERANGE
-		case strings.HasPrefix(tag, "#EXTINF") || strings.HasPrefix(tag, "#EXT-X-BYTERANGE"):
+		case strings.HasPrefix(tag, media.TagMediaDuration) || strings.HasPrefix(tag, media.TagByteRange):
 			mediaPlaylist = append(mediaPlaylist, tag...)
 			mediaPlaylist = append(mediaPlaylist, '\n')
 
 			switch segment.RequestType {
 			// append media line for segment
 			case parse.SegmentBySegment:
-				if strings.HasPrefix(tag, "#EXTINF") && aggregatedTimeMs < v.WindowDurationMs {
+				if strings.HasPrefix(tag, media.TagMediaDuration) && aggregatedTimeMs < v.WindowDurationMs {
 					mediaPlaylist = append(mediaPlaylist, strconv.Itoa(segmentIndex)+segment.FileExtension...)
 					mediaPlaylist = append(mediaPlaylist, '\n')
 					aggregatedTimeMs += segment.DurationMs
@@ -77,7 +78,7 @@ func (v *LiveLoader) LoadMediaPlaylist(index int) ([]byte, error) {
 				}
 			// append media line for byte-range
 			case parse.ByteRange:
-				if strings.HasPrefix(tag, "#EXT-X-BYTERANGE") && aggregatedTimeMs < v.WindowDurationMs {
+				if strings.HasPrefix(tag, media.TagByteRange) && aggregatedTimeMs < v.WindowDurationMs {
 					mediaPlaylist = append(mediaPlaylist, strconv.Itoa(segment.DiscontinuitySequence)+segment.FileExtension...)
 					mediaPlaylist = append(mediaPlaylist, '\n')
 					aggregatedTimeMs += segment.DurationMs

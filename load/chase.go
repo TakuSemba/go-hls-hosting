@@ -1,6 +1,7 @@
 package load
 
 import (
+	"github.com/TakuSemba/go-media-hosting/media"
 	"github.com/TakuSemba/go-media-hosting/parse"
 	"strconv"
 	"strings"
@@ -37,14 +38,14 @@ func (v *ChaseLoader) LoadMediaPlaylist(index int) ([]byte, error) {
 			mediaPlaylist = append(mediaPlaylist, '\n')
 
 		// append #EXTINF / #EXT-X-BYTERANGE
-		case strings.HasPrefix(tag, "#EXTINF") || strings.HasPrefix(tag, "#EXT-X-BYTERANGE"):
+		case strings.HasPrefix(tag, media.TagMediaDuration) || strings.HasPrefix(tag, media.TagByteRange):
 			mediaPlaylist = append(mediaPlaylist, tag...)
 			mediaPlaylist = append(mediaPlaylist, '\n')
 
 			switch segment.RequestType {
 			// append media line for segment
 			case parse.SegmentBySegment:
-				if strings.HasPrefix(tag, "#EXTINF") && aggregatedTimeMs < elapsedTimeMs {
+				if strings.HasPrefix(tag, media.TagMediaDuration) && aggregatedTimeMs < elapsedTimeMs {
 					mediaPlaylist = append(mediaPlaylist, tag...)
 					mediaPlaylist = append(mediaPlaylist, '\n')
 					mediaPlaylist = append(mediaPlaylist, strconv.Itoa(segmentIndex)+".ts"...)
@@ -54,7 +55,7 @@ func (v *ChaseLoader) LoadMediaPlaylist(index int) ([]byte, error) {
 				}
 			// append media line for byte-range
 			case parse.ByteRange:
-				if strings.HasPrefix(tag, "#EXT-X-BYTERANGE") && aggregatedTimeMs < elapsedTimeMs {
+				if strings.HasPrefix(tag, media.TagByteRange) && aggregatedTimeMs < elapsedTimeMs {
 					mediaPlaylist = append(mediaPlaylist, strconv.Itoa(segment.DiscontinuitySequence)+segment.FileExtension...)
 					mediaPlaylist = append(mediaPlaylist, '\n')
 					aggregatedTimeMs += segment.DurationMs

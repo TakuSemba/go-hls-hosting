@@ -1,6 +1,7 @@
 package load
 
 import (
+	"github.com/TakuSemba/go-media-hosting/media"
 	"github.com/TakuSemba/go-media-hosting/parse"
 	"strconv"
 	"strings"
@@ -24,14 +25,14 @@ func (v *VodLoader) LoadMediaPlaylist(index int) ([]byte, error) {
 	for _, tag := range v.MasterPlaylist.MediaPlaylists[index].Tags {
 		switch {
 		// append #EXTINF / #EXT-X-BYTERANGE
-		case strings.HasPrefix(tag, "#EXTINF") || strings.HasPrefix(tag, "#EXT-X-BYTERANGE"):
+		case strings.HasPrefix(tag, media.TagMediaDuration) || strings.HasPrefix(tag, media.TagByteRange):
 			mediaPlaylist = append(mediaPlaylist, tag...)
 			mediaPlaylist = append(mediaPlaylist, '\n')
 			segment := v.MasterPlaylist.MediaPlaylists[index].Segments[segmentIndex]
 			switch segment.RequestType {
 			// append media line for segment
 			case parse.SegmentBySegment:
-				if strings.HasPrefix(tag, "#EXTINF") {
+				if strings.HasPrefix(tag, media.TagMediaDuration) {
 					mediaPlaylist = append(mediaPlaylist, strconv.Itoa(segmentIndex)+segment.FileExtension...)
 					mediaPlaylist = append(mediaPlaylist, '\n')
 					segmentIndex += 1
@@ -39,7 +40,7 @@ func (v *VodLoader) LoadMediaPlaylist(index int) ([]byte, error) {
 
 			// append media line for byte-range
 			case parse.ByteRange:
-				if strings.HasPrefix(tag, "#EXT-X-BYTERANGE") {
+				if strings.HasPrefix(tag, media.TagByteRange) {
 					mediaPlaylist = append(mediaPlaylist, strconv.Itoa(segment.DiscontinuitySequence)+segment.FileExtension...)
 					mediaPlaylist = append(mediaPlaylist, '\n')
 				}
