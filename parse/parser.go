@@ -56,6 +56,13 @@ func (p *Parser) ParseMasterPlaylist(path string) (MasterPlaylist, error) {
 		if strings.HasPrefix(line, "# ") {
 			continue
 		}
+		// append EXT-X-MEDIA-SEQUENCE, EXT-X-DISCONTINUITY-SEQUENCE while ignoring pre-existed those tags.
+		if strings.HasPrefix(line, "#EXT-X-MEDIA-SEQUENCE") {
+			continue
+		}
+		if strings.HasPrefix(line, "#EXT-X-DISCONTINUITY-SEQUENCE") {
+			continue
+		}
 		if strings.HasPrefix(line, "#EXT") {
 			tags = append(tags, line)
 		}
@@ -67,6 +74,7 @@ func (p *Parser) ParseMasterPlaylist(path string) (MasterPlaylist, error) {
 			mediaPlaylists = append(mediaPlaylists, mediaPlaylist)
 		}
 	}
+
 	masterPlaylist := MasterPlaylist{
 		Path:           path,
 		Tags:           tags,
@@ -101,6 +109,10 @@ func (p *Parser) ParseMediaPlaylist(path string) (MediaPlaylist, error) {
 		}
 		if strings.HasPrefix(line, "#EXT") {
 			tags = append(tags, line)
+			if strings.HasPrefix(line, "#EXT-X-TARGETDURATION") {
+				tags = append(tags, "#EXT-X-MEDIA-SEQUENCE:0")
+				tags = append(tags, "#EXT-X-DISCONTINUITY-SEQUENCE:0")
+			}
 		}
 		if !strings.HasPrefix(line, "#") {
 			for i := len(tags) - 1; i >= 0; i-- {

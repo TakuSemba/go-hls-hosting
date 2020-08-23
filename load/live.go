@@ -18,7 +18,7 @@ func NewLiveLoader(original parse.MasterPlaylist) LiveLoader {
 	return LiveLoader{
 		DefaultLoader:    NewDefaultLoader(original),
 		MasterPlaylist:   original,
-		StartedAt:        time.Now().Add(time.Duration(-9 * 60 * 1000 * 1000 * 1000)),
+		StartedAt:        time.Now(),
 		WindowDurationMs: 20 * 1000,
 	}
 }
@@ -38,7 +38,15 @@ func (v *LiveLoader) LoadMediaPlaylist(index int) ([]byte, error) {
 
 	aggregatedTimeMs = float64(0)
 	for _, tag := range v.MasterPlaylist.MediaPlaylists[index].Tags {
-		if strings.HasPrefix(tag, "#EXTINF") {
+		switch {
+		case strings.HasPrefix(tag, "#EXT-X-PLAYLIST-TYPE"):
+			mediaPlaylist = append(mediaPlaylist, "#EXT-X-PLAYLIST-TYPE:EVENT"...)
+			mediaPlaylist = append(mediaPlaylist, '\n')
+		case strings.HasPrefix(tag, "#EXT-X-MEDIA-SEQUENCE"):
+			mediaSequence := "#EXT-X-MEDIA-SEQUENCE:" + strconv.Itoa(segmentIndex)
+			mediaPlaylist = append(mediaPlaylist, mediaSequence...)
+			mediaPlaylist = append(mediaPlaylist, '\n')
+		case strings.HasPrefix(tag, "#EXTINF"):
 			if aggregatedTimeMs < v.WindowDurationMs {
 				mediaPlaylist = append(mediaPlaylist, tag...)
 				mediaPlaylist = append(mediaPlaylist, '\n')
@@ -48,9 +56,9 @@ func (v *LiveLoader) LoadMediaPlaylist(index int) ([]byte, error) {
 				segmentIndex += 1
 				segmentIndex = segmentIndex % len(v.MasterPlaylist.MediaPlaylists[index].Segments)
 			}
-		} else if strings.HasPrefix(tag, "#EXT-X-ENDLIST") {
+		case strings.HasPrefix(tag, "#EXT-X-ENDLIST"):
 			continue
-		} else {
+		default:
 			mediaPlaylist = append(mediaPlaylist, tag...)
 			mediaPlaylist = append(mediaPlaylist, '\n')
 		}
