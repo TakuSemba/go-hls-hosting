@@ -46,7 +46,6 @@ func (v *LiveLoader) LoadMediaPlaylist(index int) ([]byte, error) {
 	// create media playlist.
 	aggregatedTimeMs = float64(0)
 	for _, tag := range original.Tags {
-		segment := original.Segments[segmentIndex]
 
 		if 0 < skipMediaDurationTag && strings.HasPrefix(tag, media.TagMediaDuration) {
 			skipMediaDurationTag -= 1
@@ -73,6 +72,7 @@ func (v *LiveLoader) LoadMediaPlaylist(index int) ([]byte, error) {
 
 		// append #EXT-X-DISCONTINUITY-SEQUENCE:xx.
 		case strings.HasPrefix(tag, media.TagDiscontinuitySequence):
+			segment := original.Segments[segmentIndex]
 			discontinuitySequence := repeatedWindowCount*original.TotalDiscontinuityCount + segment.DiscontinuitySequence
 			discontinuitySequenceTag := "#EXT-X-DISCONTINUITY-SEQUENCE:" + strconv.Itoa(discontinuitySequence)
 			mediaPlaylist = append(mediaPlaylist, discontinuitySequenceTag...)
@@ -80,7 +80,7 @@ func (v *LiveLoader) LoadMediaPlaylist(index int) ([]byte, error) {
 
 		// append #EXTINF / #EXT-X-BYTERANGE.
 		case strings.HasPrefix(tag, media.TagMediaDuration) || strings.HasPrefix(tag, media.TagByteRange):
-
+			segment := original.Segments[segmentIndex]
 			if aggregatedTimeMs+segment.DurationMs < v.WindowDurationMs {
 				mediaPlaylist = append(mediaPlaylist, tag...)
 				mediaPlaylist = append(mediaPlaylist, '\n')

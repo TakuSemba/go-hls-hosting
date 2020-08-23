@@ -25,7 +25,15 @@ func TestLoadTsChaseMediaPlaylist(t *testing.T) {
 		"#EXTINF:5,\n" +
 		"2.ts\n" +
 		"#EXTINF:3,\n" +
-		"3.ts\n"
+		"3.ts\n" +
+		"#EXTINF:4,\n" +
+		"4.ts\n" +
+		"#EXTINF:5,\n" +
+		"5.ts\n" +
+		"#EXTINF:3,\n" +
+		"6.ts\n" +
+		"#EXTINF:4,\n" +
+		"7.ts\n"
 	if assert.NoError(t, err) {
 		assert.Equal(t, mediaPlaylist, string(actual))
 	}
@@ -50,7 +58,15 @@ func TestLoadFmp4ChaseMediaPlaylist(t *testing.T) {
 		"#EXTINF:5,\n" +
 		"2.mp4\n" +
 		"#EXTINF:3,\n" +
-		"3.mp4\n"
+		"3.mp4\n" +
+		"#EXTINF:4,\n" +
+		"4.mp4\n" +
+		"#EXTINF:5,\n" +
+		"5.mp4\n" +
+		"#EXTINF:3,\n" +
+		"6.mp4\n" +
+		"#EXTINF:4,\n" +
+		"7.mp4\n"
 	if assert.NoError(t, err) {
 		assert.Equal(t, mediaPlaylist, string(actual))
 	}
@@ -79,6 +95,18 @@ func TestLoadByteRangeChaseMediaPlaylist(t *testing.T) {
 		"0.mp4\n" +
 		"#EXTINF:3,\n" +
 		"#EXT-X-BYTERANGE:300000@1200100\n" +
+		"0.mp4\n" +
+		"#EXTINF:4,\n" +
+		"#EXT-X-BYTERANGE:400000@1500100\n" +
+		"0.mp4\n" +
+		"#EXTINF:5,\n" +
+		"#EXT-X-BYTERANGE:500000@1900100\n" +
+		"0.mp4\n" +
+		"#EXTINF:3,\n" +
+		"#EXT-X-BYTERANGE:300000@2400100\n" +
+		"0.mp4\n" +
+		"#EXTINF:4,\n" +
+		"#EXT-X-BYTERANGE:400000@2700100\n" +
 		"0.mp4\n"
 
 	if assert.NoError(t, err) {

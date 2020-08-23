@@ -10,15 +10,17 @@ import (
 
 type ChaseLoader struct {
 	DefaultLoader
-	MasterPlaylist parse.MasterPlaylist
-	StartedAt      time.Time
+	MasterPlaylist          parse.MasterPlaylist
+	StartedAt               time.Time
+	InitialWindowDurationMs float64
 }
 
 func NewChaseLoader(original parse.MasterPlaylist) ChaseLoader {
 	return ChaseLoader{
-		DefaultLoader:  NewDefaultLoader(original),
-		MasterPlaylist: original,
-		StartedAt:      time.Now(),
+		DefaultLoader:           NewDefaultLoader(original),
+		MasterPlaylist:          original,
+		StartedAt:               time.Now(),
+		InitialWindowDurationMs: 20 * 1000,
 	}
 }
 
@@ -29,8 +31,9 @@ func (v *ChaseLoader) LoadMediaPlaylist(index int) ([]byte, error) {
 	elapsedTimeMs := float64(time.Now().Sub(v.StartedAt).Milliseconds())
 	original := v.MasterPlaylist.MediaPlaylists[index]
 
+	windowDurationMs := elapsedTimeMs + v.InitialWindowDurationMs
+
 	for _, tag := range v.MasterPlaylist.MediaPlaylists[index].Tags {
-		segment := original.Segments[segmentIndex]
 		switch {
 		// append #EXT-X-PLAYLIST-TYPE:EVENT.
 		case strings.HasPrefix(tag, "#EXT-X-PLAYLIST-TYPE"):
@@ -39,8 +42,9 @@ func (v *ChaseLoader) LoadMediaPlaylist(index int) ([]byte, error) {
 
 		// append #EXTINF / #EXT-X-BYTERANGE.
 		case strings.HasPrefix(tag, media.TagMediaDuration) || strings.HasPrefix(tag, media.TagByteRange):
+			segment := original.Segments[segmentIndex]
 
-			if aggregatedTimeMs+segment.DurationMs < elapsedTimeMs {
+			if aggregatedTimeMs+segment.DurationMs < windowDurationMs {
 				mediaPlaylist = append(mediaPlaylist, tag...)
 				mediaPlaylist = append(mediaPlaylist, '\n')
 
@@ -66,7 +70,7 @@ func (v *ChaseLoader) LoadMediaPlaylist(index int) ([]byte, error) {
 
 		// ignore #EXT-X-ENDLIST if needed.
 		case strings.HasPrefix(tag, "#EXT-X-ENDLIST"):
-			if segmentIndex == len(original.Segments)-1 {
+			if len(original.Segments)-1 < segmentIndex {
 				mediaPlaylist = append(mediaPlaylist, tag...)
 				mediaPlaylist = append(mediaPlaylist, '\n')
 			}

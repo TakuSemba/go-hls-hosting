@@ -9,7 +9,7 @@ const (
 	FakeMasterPlaylist = "#EXTM3U\n" +
 		"#EXT-X-VERSION:4\n" +
 		"#EXT-X-STREAM-INF:AVERAGE-BANDWIDTH=2231539,BANDWIDTH=2984657,CODECS=\"avc1.64001F,mp4a.40.2\",RESOLUTION=1280x720\n" +
-		"media-1/stream.m3u8\n"
+		"stream-1/stream.m3u8\n"
 
 	FakeTsMediaPlaylist = "#EXTM3U\n" +
 		"#EXT-X-VERSION:4\n" +

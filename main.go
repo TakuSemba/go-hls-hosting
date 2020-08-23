@@ -1,14 +1,25 @@
 package main
 
 import (
+	"flag"
 	"github.com/TakuSemba/go-hls-hosting/handle"
 	"github.com/TakuSemba/go-hls-hosting/load"
 	"github.com/TakuSemba/go-hls-hosting/parse"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"strconv"
+)
+
+var (
+	port int
+	path string
 )
 
 func main() {
+
+	flag.IntVar(&port, "port", 1323, "port to listen")
+	flag.StringVar(&path, "path", "sampledata/master.m3u8", "playlist path")
+	flag.Parse()
 
 	// Echo instance
 	e := echo.New()
@@ -20,7 +31,7 @@ func main() {
 
 	// Parse Playlist
 	parser := parse.NewParser()
-	original, err := parser.Parse("/Users/takusemba/Downloads/sample-bbb/output/master.m3u8")
+	original, err := parser.Parse(path)
 	if err != nil {
 		e.Logger.Fatal(err)
 	}
@@ -41,5 +52,5 @@ func main() {
 	e.GET("/chase/:index/:segment", handler.ChaseSegment)
 
 	// Start server
-	e.Logger.Fatal(e.Start(":1323"))
+	e.Logger.Fatal(e.Start(":" + strconv.Itoa(port)))
 }
