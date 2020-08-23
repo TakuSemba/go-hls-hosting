@@ -20,7 +20,7 @@ func NewLiveLoader(original parse.MasterPlaylist) LiveLoader {
 		DefaultLoader:    NewDefaultLoader(original),
 		MasterPlaylist:   original,
 		StartedAt:        time.Now(),
-		WindowDurationMs: 20 * 1000,
+		WindowDurationMs: 40 * 1000,
 	}
 }
 

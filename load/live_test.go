@@ -10,6 +10,7 @@ func TestLoadTsLiveMediaPlaylist(t *testing.T) {
 	loader := NewLiveLoader(FakeTsMasterPlayList)
 	// 5 minutes before
 	loader.StartedAt = time.Now().Add(time.Duration(-5 * 60 * 1000 * 1000 * 1000))
+	loader.WindowDurationMs = 20 * 1000
 	actual, err := loader.LoadMediaPlaylist(0)
 	mediaPlaylist := "#EXTM3U\n" +
 		"#EXT-X-VERSION:4\n" +
@@ -37,6 +38,7 @@ func TestLoadFmp4LiveMediaPlaylist(t *testing.T) {
 	loader := NewLiveLoader(FakeFmp4MasterPlayList)
 	// 5 minutes before
 	loader.StartedAt = time.Now().Add(time.Duration(-5 * 60 * 1000 * 1000 * 1000))
+	loader.WindowDurationMs = 20 * 1000
 	actual, err := loader.LoadMediaPlaylist(0)
 	mediaPlaylist := "#EXTM3U\n" +
 		"#EXT-X-VERSION:4\n" +
@@ -65,6 +67,7 @@ func TestLoadByteRangeLiveMediaPlaylist(t *testing.T) {
 	loader := NewLiveLoader(FakeByteRangeMasterPlayList)
 	// 5 minutes before
 	loader.StartedAt = time.Now().Add(time.Duration(-5 * 60 * 1000 * 1000 * 1000))
+	loader.WindowDurationMs = 20 * 1000
 	actual, err := loader.LoadMediaPlaylist(0)
 	mediaPlaylist := "#EXTM3U\n" +
 		"#EXT-X-VERSION:4\n" +
