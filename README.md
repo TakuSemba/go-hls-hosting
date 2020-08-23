@@ -6,7 +6,9 @@
 
 **go-hls-hosting** generates **LIVE**, **CHASE** playlists from your given **VOD** playlist, and allows you to access to those **VOD**, **LIVE**, **CHASE** playlists individually.
 
-gif...
+<p align="center">
+  <img width="1000" src="assets/overview.gif">
+</p>
 
 ## Get Started
 
@@ -38,7 +40,9 @@ You can download binary from [release](https://github.com/TakuSemba/go-hls-hosti
 With [ngrok](https://ngrok.com/), you can publish playlists.
 
 
-gif...
+<p align="left">
+  <img width="600" src="assets/ngrok.png">
+</p>
 
 
 ## Author
