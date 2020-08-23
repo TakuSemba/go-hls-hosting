@@ -1,7 +1,7 @@
 package parse
 
 import (
-	"reflect"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -58,16 +58,13 @@ func TestParseMasterPlaylist(t *testing.T) {
 	}
 	parser := Parser{ReadFile: fileReader.FakeReadFile}
 	actual, err := parser.ParseMasterPlaylist(testPath)
-	if err != nil {
-		t.Fatalf("error happened: %#v", err)
-	}
 	tags := []string{
 		"#EXTM3U",
 		"#EXT-X-VERSION:4",
 		"#EXT-X-STREAM-INF:AVERAGE-BANDWIDTH=2231539,BANDWIDTH=2984657,CODECS=\"avc1.64001F,mp4a.40.2\",RESOLUTION=1280x720",
 	}
-	if !reflect.DeepEqual(tags, actual.Tags) {
-		t.Errorf("exspected: %v, actual: %v", tags, actual.Tags)
+	if assert.NoError(t, err) {
+		assert.Equal(t, tags, actual.Tags)
 	}
 }
 
@@ -79,9 +76,6 @@ func TestParseMediaPlaylist(t *testing.T) {
 	}
 	parser := Parser{ReadFile: fileReader.FakeReadFile}
 	actual, err := parser.ParseMediaPlaylist(testPath)
-	if err != nil {
-		t.Fatalf("error happened: %#v", err)
-	}
 	tags := []string{
 		"#EXTM3U",
 		"#EXT-X-VERSION:4",
@@ -101,17 +95,8 @@ func TestParseMediaPlaylist(t *testing.T) {
 		"#EXTINF:5,",
 		"#EXT-X-ENDLIST",
 	}
-	if !reflect.DeepEqual(tags, actual.Tags) {
-		t.Errorf("exspected: %v, actual: %v", tags, actual.Tags)
-	}
 	totalDiscontinuityCount := 0
-	if totalDiscontinuityCount != actual.TotalDiscontinuityCount {
-		t.Errorf("exspected: %v, actual: %v", totalDiscontinuityCount, actual.TotalDiscontinuityCount)
-	}
 	totalDurationMs := float64(36000)
-	if totalDurationMs != actual.TotalDurationMs {
-		t.Errorf("exspected: %v, actual: %v", totalDurationMs, actual.TotalDurationMs)
-	}
 	segments := []Segment{
 		{Path: "segment-0.ts", DurationMs: 3000, DiscontinuitySequence: 0, FileExtension: ".ts", ContainerFormat: Ts, RequestType: SegmentBySegment},
 		{Path: "segment-1.ts", DurationMs: 4000, DiscontinuitySequence: 0, FileExtension: ".ts", ContainerFormat: Ts, RequestType: SegmentBySegment},
@@ -123,7 +108,10 @@ func TestParseMediaPlaylist(t *testing.T) {
 		{Path: "segment-7.ts", DurationMs: 4000, DiscontinuitySequence: 0, FileExtension: ".ts", ContainerFormat: Ts, RequestType: SegmentBySegment},
 		{Path: "segment-8.ts", DurationMs: 5000, DiscontinuitySequence: 0, FileExtension: ".ts", ContainerFormat: Ts, RequestType: SegmentBySegment},
 	}
-	if !reflect.DeepEqual(segments, actual.Segments) {
-		t.Errorf("exspected: %v, actual: %v", segments, actual.Segments)
+	if assert.NoError(t, err) {
+		assert.Equal(t, tags, actual.Tags)
+		assert.Equal(t, totalDiscontinuityCount, actual.TotalDiscontinuityCount)
+		assert.Equal(t, totalDurationMs, actual.TotalDurationMs)
+		assert.Equal(t, segments, actual.Segments)
 	}
 }

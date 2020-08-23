@@ -1,6 +1,7 @@
 package load
 
 import (
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -8,9 +9,6 @@ func TestLoadMediaPlaylist(t *testing.T) {
 	original := FakeMasterPlayList
 	loader := NewVodLoader(original)
 	actual, err := loader.LoadMediaPlaylist(0)
-	if err != nil {
-		t.Fatalf("error happened: %#v", err)
-	}
 	mediaPlaylist := "#EXTM3U\n" +
 		"#EXT-X-VERSION:4\n" +
 		"#EXT-X-PLAYLIST-TYPE:VOD\n" +
@@ -37,7 +35,8 @@ func TestLoadMediaPlaylist(t *testing.T) {
 		"#EXTINF:5,\n" +
 		"8.ts\n" +
 		"#EXT-X-ENDLIST\n"
-	if mediaPlaylist != string(actual) {
-		t.Errorf("exspected: %v, actual: %v", mediaPlaylist, string(actual))
+
+	if assert.NoError(t, err) {
+		assert.Equal(t, mediaPlaylist, string(actual))
 	}
 }

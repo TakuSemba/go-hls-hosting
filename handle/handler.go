@@ -10,9 +10,9 @@ import (
 )
 
 const (
-	ContentTypeMpegUrl = "application/x-mpegURL"
-	ContentTypeMpeg2Ts = "video/MP2T"
-	ContentTypeMP4     = "video/mp4"
+	MimeMpegUrl = "application/x-mpegURL"
+	MimeMpeg2Ts = "video/MP2T"
+	MimeMP4     = "video/mp4"
 )
 
 type Handler struct {
@@ -37,7 +37,7 @@ func (h *Handler) VodMediaPlaylist(c echo.Context) error {
 	return h.loadMediaPlaylist(h.VodLoader, c)
 }
 
-func (h *Handler) VodSegments(c echo.Context) error {
+func (h *Handler) VodSegment(c echo.Context) error {
 	return h.loadSegment(h.ChaseLoader, c)
 }
 
@@ -49,7 +49,7 @@ func (h *Handler) LiveMediaPlaylist(c echo.Context) error {
 	return h.loadMediaPlaylist(h.LiveLoader, c)
 }
 
-func (h *Handler) LiveSegments(c echo.Context) error {
+func (h *Handler) LiveSegment(c echo.Context) error {
 	return h.loadSegment(h.ChaseLoader, c)
 }
 
@@ -61,7 +61,7 @@ func (h *Handler) ChaseMediaPlaylist(c echo.Context) error {
 	return h.loadMediaPlaylist(h.ChaseLoader, c)
 }
 
-func (h *Handler) ChaseSegments(c echo.Context) error {
+func (h *Handler) ChaseSegment(c echo.Context) error {
 	return h.loadSegment(h.ChaseLoader, c)
 }
 
@@ -70,7 +70,7 @@ func (h *Handler) loadMasterPlaylist(loader load.Loader, c echo.Context) error {
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "failed to load MasterPlaylist.")
 	}
-	return c.Blob(http.StatusOK, ContentTypeMpegUrl, masterPlaylist)
+	return c.Blob(http.StatusOK, MimeMpegUrl, masterPlaylist)
 }
 
 func (h *Handler) loadMediaPlaylist(loader load.Loader, c echo.Context) error {
@@ -82,7 +82,7 @@ func (h *Handler) loadMediaPlaylist(loader load.Loader, c echo.Context) error {
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "failed to load MediaPlaylist.")
 	}
-	return c.Blob(http.StatusOK, ContentTypeMpegUrl, mediaPlaylist)
+	return c.Blob(http.StatusOK, MimeMpegUrl, mediaPlaylist)
 }
 
 func (h *Handler) loadSegment(loader load.Loader, c echo.Context) error {
@@ -91,7 +91,7 @@ func (h *Handler) loadSegment(loader load.Loader, c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "failed to load MediaPlaylist.")
 	}
 	segmentName := c.Param("segment")
-	segmentIndex, err := strconv.Atoi(segmentName[0 : len(segmentName)-3])
+	segmentIndex, err := strconv.Atoi(segmentName[0:strings.LastIndex(segmentName, ".")])
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "failed to load MediaPlaylist.")
 	}
@@ -103,15 +103,15 @@ func (h *Handler) loadSegment(loader load.Loader, c echo.Context) error {
 	var contentType string
 	switch {
 	case strings.HasSuffix(segmentName, media.TsFileExtension):
-		contentType = ContentTypeMpeg2Ts
+		contentType = MimeMpeg2Ts
 	case strings.HasSuffix(segmentName, media.Mp4FileExtension):
-		contentType = ContentTypeMP4
+		contentType = MimeMP4
 	case strings.HasPrefix(segmentName[len(segmentName)-4:], media.M4FileExtensionPrefix):
-		contentType = ContentTypeMP4
+		contentType = MimeMP4
 	case strings.HasPrefix(segmentName[len(segmentName)-5:], media.Mp4FileExtensionPrefix):
-		contentType = ContentTypeMP4
+		contentType = MimeMP4
 	case strings.HasPrefix(segmentName[len(segmentName)-5:], media.CmfFileExtensionPrefix):
-		contentType = ContentTypeMP4
+		contentType = MimeMP4
 	default:
 		return c.String(http.StatusBadRequest, "failed to load Segment.")
 	}

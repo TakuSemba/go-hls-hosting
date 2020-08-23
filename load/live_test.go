@@ -1,6 +1,7 @@
 package load
 
 import (
+	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
 )
@@ -11,9 +12,6 @@ func TestLiveLoadMediaPlaylist(t *testing.T) {
 	// 5 minutes before
 	loader.StartedAt = time.Now().Add(time.Duration(-5 * 60 * 1000 * 1000 * 1000))
 	actual, err := loader.LoadMediaPlaylist(0)
-	if err != nil {
-		t.Fatalf("error happened: %#v", err)
-	}
 	mediaPlaylist := "#EXTM3U\n" +
 		"#EXT-X-VERSION:4\n" +
 		"#EXT-X-PLAYLIST-TYPE:EVENT\n" +
@@ -33,7 +31,7 @@ func TestLiveLoadMediaPlaylist(t *testing.T) {
 		"7.ts\n" +
 		"#EXTINF:5,\n" +
 		"8.ts\n"
-	if mediaPlaylist != string(actual) {
-		t.Errorf("exspected: %v, actual: %v", mediaPlaylist, string(actual))
+	if assert.NoError(t, err) {
+		assert.Equal(t, mediaPlaylist, string(actual))
 	}
 }
