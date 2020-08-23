@@ -5,6 +5,39 @@ import (
 	"testing"
 )
 
+const (
+	FakeMasterPlaylist = "#EXTM3U\n" +
+		"#EXT-X-VERSION:4\n" +
+		"#EXT-X-STREAM-INF:AVERAGE-BANDWIDTH=2231539,BANDWIDTH=2984657,CODECS=\"avc1.64001F,mp4a.40.2\",RESOLUTION=1280x720\n" +
+		"media-1/stream.m3u8\n"
+
+	FakeMediaPlaylist = "#EXTM3U\n" +
+		"#EXT-X-VERSION:4\n" +
+		"#EXT-X-PLAYLIST-TYPE:VOD\n" +
+		"#EXT-X-INDEPENDENT-SEGMENTS\n" +
+		"#EXT-X-TARGETDURATION:5\n" +
+		"#EXT-X-MEDIA-SEQUENCE:0\n" +
+		"#EXTINF:3,\n" +
+		"segment-0.ts\n" +
+		"#EXTINF:4,\n" +
+		"segment-1.ts\n" +
+		"#EXTINF:5,\n" +
+		"segment-2.ts\n" +
+		"#EXTINF:3,\n" +
+		"segment-3.ts\n" +
+		"#EXTINF:4,\n" +
+		"segment-4.ts\n" +
+		"#EXTINF:5,\n" +
+		"segment-5.ts\n" +
+		"#EXTINF:3,\n" +
+		"segment-6.ts\n" +
+		"#EXTINF:4,\n" +
+		"segment-7.ts\n" +
+		"#EXTINF:5,\n" +
+		"segment-8.ts\n" +
+		"#EXT-X-ENDLIST\n"
+)
+
 type FakeFileReader struct {
 	expectedPath string
 	ReadBytes    []byte
@@ -21,12 +54,7 @@ func TestParseMasterPlaylist(t *testing.T) {
 	testPath := "testMasterPlaylist.m3u8"
 	fileReader := FakeFileReader{
 		expectedPath: testPath,
-		ReadBytes: []byte(
-			"#EXTM3U\n" +
-				"#EXT-X-VERSION:4\n" +
-				"#EXT-X-STREAM-INF:AVERAGE-BANDWIDTH=2231539,BANDWIDTH=2984657,CODECS=\"avc1.64001F,mp4a.40.2\",RESOLUTION=1280x720\n" +
-				"media-1/stream.m3u8\n",
-		),
+		ReadBytes:    []byte(FakeMasterPlaylist),
 	}
 	parser := Parser{ReadFile: fileReader.FakeReadFile}
 	actual, err := parser.ParseMasterPlaylist(testPath)
@@ -47,33 +75,7 @@ func TestParseMediaPlaylist(t *testing.T) {
 	testPath := "testMediaPlaylist.m3u8"
 	fileReader := FakeFileReader{
 		expectedPath: testPath,
-		ReadBytes: []byte(
-			"#EXTM3U\n" +
-				"#EXT-X-VERSION:4\n" +
-				"#EXT-X-PLAYLIST-TYPE:VOD\n" +
-				"#EXT-X-INDEPENDENT-SEGMENTS\n" +
-				"#EXT-X-TARGETDURATION:5\n" +
-				"#EXT-X-MEDIA-SEQUENCE:0\n" +
-				"#EXTINF:3,\n" +
-				"segment-0.ts\n" +
-				"#EXTINF:4,\n" +
-				"segment-1.ts\n" +
-				"#EXTINF:5,\n" +
-				"segment-2.ts\n" +
-				"#EXTINF:3,\n" +
-				"segment-3.ts\n" +
-				"#EXTINF:4,\n" +
-				"segment-4.ts\n" +
-				"#EXTINF:5,\n" +
-				"segment-5.ts\n" +
-				"#EXTINF:3,\n" +
-				"segment-6.ts\n" +
-				"#EXTINF:4,\n" +
-				"segment-7.ts\n" +
-				"#EXTINF:5,\n" +
-				"segment-8.ts\n" +
-				"#EXT-X-ENDLIST\n",
-		),
+		ReadBytes:    []byte(FakeMediaPlaylist),
 	}
 	parser := Parser{ReadFile: fileReader.FakeReadFile}
 	actual, err := parser.ParseMediaPlaylist(testPath)
