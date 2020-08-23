@@ -3,7 +3,6 @@ package parse
 import (
 	"bufio"
 	"bytes"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"path/filepath"
@@ -97,7 +96,6 @@ func (p *Parser) ParseMediaPlaylist(path string) (MediaPlaylist, error) {
 	for {
 		readBytes, _, err := reader.ReadLine()
 		line := string(readBytes)
-		fmt.Println(line)
 		if err == io.EOF {
 			break
 		}
@@ -141,8 +139,6 @@ func (p *Parser) ParseMediaPlaylist(path string) (MediaPlaylist, error) {
 			}
 
 			// extract duration.
-			fmt.Println("lastInfTag")
-			fmt.Println(lastInfTag)
 			duration, err := strconv.ParseFloat(lastInfTag[8:len(lastInfTag)-1], 64)
 			if err != nil {
 				return MediaPlaylist{}, nil
