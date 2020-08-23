@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/TakuSemba/go-media-hosting/handle"
-	"github.com/TakuSemba/go-media-hosting/load"
-	"github.com/TakuSemba/go-media-hosting/parse"
+	"github.com/TakuSemba/go-hls-hosting/handle"
+	"github.com/TakuSemba/go-hls-hosting/load"
+	"github.com/TakuSemba/go-hls-hosting/parse"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )

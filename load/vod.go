@@ -1,8 +1,8 @@
 package load
 
 import (
-	"github.com/TakuSemba/go-media-hosting/media"
-	"github.com/TakuSemba/go-media-hosting/parse"
+	"github.com/TakuSemba/go-hls-hosting/media"
+	"github.com/TakuSemba/go-hls-hosting/parse"
 	"strconv"
 	"strings"
 )

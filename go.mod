@@ -1,4 +1,4 @@
-module github.com/TakuSemba/go-media-hosting
+module github.com/TakuSemba/go-hls-hosting
 
 go 1.15
 

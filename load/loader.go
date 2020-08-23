@@ -1,7 +1,7 @@
 package load
 
 import (
-	"github.com/TakuSemba/go-media-hosting/parse"
+	"github.com/TakuSemba/go-hls-hosting/parse"
 	"io/ioutil"
 	"path/filepath"
 	"strconv"

@@ -3,7 +3,7 @@ package parse
 import (
 	"bufio"
 	"bytes"
-	"github.com/TakuSemba/go-media-hosting/media"
+	"github.com/TakuSemba/go-hls-hosting/media"
 	"io"
 	"io/ioutil"
 	"path/filepath"

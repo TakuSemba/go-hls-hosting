@@ -1,8 +1,8 @@
 package handle
 
 import (
-	"github.com/TakuSemba/go-media-hosting/load"
-	"github.com/TakuSemba/go-media-hosting/media"
+	"github.com/TakuSemba/go-hls-hosting/load"
+	"github.com/TakuSemba/go-hls-hosting/media"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"strconv"
