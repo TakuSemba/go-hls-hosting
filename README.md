@@ -37,11 +37,6 @@ You can download binary from [release](https://github.com/TakuSemba/go-hls-hosti
 
 With [ngrok](https://ngrok.com/), you can publish playlists.
 
-
-<p align="left">
-  <img width="600" src="assets/ngrok.png">
-</p>
-
 <img src="https://github.com/TakuSemba/go-hls-hosting/blob/master/assets/ngrok.png" alt="alt text" width="600">
 
 ## Author
