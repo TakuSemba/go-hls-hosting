@@ -7,13 +7,15 @@ type MasterPlaylist struct {
 }
 
 type MediaPlaylist struct {
-	Path            string
-	Tags            []string
-	Segments        []Segment
-	TotalDurationMs float64
+	Path                    string
+	Tags                    []string
+	Segments                []Segment
+	TotalDurationMs         float64
+	TotalDiscontinuityCount int
 }
 
 type Segment struct {
-	Path       string
-	DurationMs float64
+	Path                  string
+	DurationMs            float64
+	DiscontinuitySequence int
 }

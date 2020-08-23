@@ -56,13 +56,6 @@ func (p *Parser) ParseMasterPlaylist(path string) (MasterPlaylist, error) {
 		if strings.HasPrefix(line, "# ") {
 			continue
 		}
-		// append EXT-X-MEDIA-SEQUENCE, EXT-X-DISCONTINUITY-SEQUENCE while ignoring pre-existed those tags.
-		if strings.HasPrefix(line, "#EXT-X-MEDIA-SEQUENCE") {
-			continue
-		}
-		if strings.HasPrefix(line, "#EXT-X-DISCONTINUITY-SEQUENCE") {
-			continue
-		}
 		if strings.HasPrefix(line, "#EXT") {
 			tags = append(tags, line)
 		}
@@ -92,6 +85,7 @@ func (p *Parser) ParseMediaPlaylist(path string) (MediaPlaylist, error) {
 	var tags []string
 	var segments []Segment
 	var totalDurationMs float64
+	var discontinuitySequence int
 	for {
 		readBytes, _, err := reader.ReadLine()
 		line := string(readBytes)
@@ -107,11 +101,21 @@ func (p *Parser) ParseMediaPlaylist(path string) (MediaPlaylist, error) {
 		if strings.HasPrefix(line, "# ") {
 			continue
 		}
+		// append EXT-X-MEDIA-SEQUENCE, EXT-X-DISCONTINUITY-SEQUENCE while ignoring pre-existed those tags.
+		if strings.HasPrefix(line, "#EXT-X-MEDIA-SEQUENCE") {
+			continue
+		}
+		if strings.HasPrefix(line, "#EXT-X-DISCONTINUITY-SEQUENCE") {
+			continue
+		}
 		if strings.HasPrefix(line, "#EXT") {
 			tags = append(tags, line)
 			if strings.HasPrefix(line, "#EXT-X-TARGETDURATION") {
 				tags = append(tags, "#EXT-X-MEDIA-SEQUENCE:0")
 				tags = append(tags, "#EXT-X-DISCONTINUITY-SEQUENCE:0")
+			}
+			if strings.HasPrefix(line, "#EXT-X-DISCONTINUITY") {
+				discontinuitySequence += 1
 			}
 		}
 		if !strings.HasPrefix(line, "#") {
@@ -124,7 +128,11 @@ func (p *Parser) ParseMediaPlaylist(path string) (MediaPlaylist, error) {
 						return MediaPlaylist{}, nil
 					}
 					durationMs := duration * 1000
-					segment := Segment{Path: line, DurationMs: durationMs}
+					segment := Segment{
+						Path:                  line,
+						DurationMs:            durationMs,
+						DiscontinuitySequence: discontinuitySequence,
+					}
 					segments = append(segments, segment)
 					totalDurationMs += durationMs
 					break
@@ -133,10 +141,11 @@ func (p *Parser) ParseMediaPlaylist(path string) (MediaPlaylist, error) {
 		}
 	}
 	mediaPlaylist := MediaPlaylist{
-		Path:            path,
-		Tags:            tags,
-		Segments:        segments,
-		TotalDurationMs: totalDurationMs,
+		Path:                    path,
+		Tags:                    tags,
+		Segments:                segments,
+		TotalDurationMs:         totalDurationMs,
+		TotalDiscontinuityCount: discontinuitySequence,
 	}
 	return mediaPlaylist, nil
 }

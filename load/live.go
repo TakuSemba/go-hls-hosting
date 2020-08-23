@@ -25,19 +25,21 @@ func NewLiveLoader(original parse.MasterPlaylist) LiveLoader {
 
 func (v *LiveLoader) LoadMediaPlaylist(index int) ([]byte, error) {
 	var mediaPlaylist []byte
-	totalDurationMs := v.MasterPlaylist.MediaPlaylists[index].TotalDurationMs
+	original := v.MasterPlaylist.MediaPlaylists[index]
+	totalDurationMs := original.TotalDurationMs
 	elapsedTimeMs := time.Now().Sub(v.StartedAt).Milliseconds()
 	adjustedElapsedTimeMs := float64(uint64(elapsedTimeMs) % uint64(totalDurationMs))
+	repeatedWindowCount := int(uint64(elapsedTimeMs) / uint64(totalDurationMs))
 
 	segmentIndex := -1
 	aggregatedTimeMs := float64(0)
 	for aggregatedTimeMs < adjustedElapsedTimeMs {
 		segmentIndex += 1
-		aggregatedTimeMs += v.MasterPlaylist.MediaPlaylists[index].Segments[segmentIndex].DurationMs
+		aggregatedTimeMs += original.Segments[segmentIndex].DurationMs
 	}
 
 	aggregatedTimeMs = float64(0)
-	for _, tag := range v.MasterPlaylist.MediaPlaylists[index].Tags {
+	for _, tag := range original.Tags {
 		switch {
 		case strings.HasPrefix(tag, "#EXT-X-PLAYLIST-TYPE"):
 			mediaPlaylist = append(mediaPlaylist, "#EXT-X-PLAYLIST-TYPE:EVENT"...)
@@ -46,15 +48,20 @@ func (v *LiveLoader) LoadMediaPlaylist(index int) ([]byte, error) {
 			mediaSequence := "#EXT-X-MEDIA-SEQUENCE:" + strconv.Itoa(segmentIndex)
 			mediaPlaylist = append(mediaPlaylist, mediaSequence...)
 			mediaPlaylist = append(mediaPlaylist, '\n')
+		case strings.HasPrefix(tag, "#EXT-X-DISCONTINUITY-SEQUENCE"):
+			discontinuitySequence := repeatedWindowCount*original.TotalDiscontinuityCount + original.Segments[segmentIndex].DiscontinuitySequence
+			mediaSequence := "#EXT-X-DISCONTINUITY-SEQUENCE:" + strconv.Itoa(discontinuitySequence)
+			mediaPlaylist = append(mediaPlaylist, mediaSequence...)
+			mediaPlaylist = append(mediaPlaylist, '\n')
 		case strings.HasPrefix(tag, "#EXTINF"):
 			if aggregatedTimeMs < v.WindowDurationMs {
 				mediaPlaylist = append(mediaPlaylist, tag...)
 				mediaPlaylist = append(mediaPlaylist, '\n')
 				mediaPlaylist = append(mediaPlaylist, strconv.Itoa(segmentIndex)+".ts"...)
 				mediaPlaylist = append(mediaPlaylist, '\n')
-				aggregatedTimeMs += v.MasterPlaylist.MediaPlaylists[index].Segments[segmentIndex].DurationMs
+				aggregatedTimeMs += original.Segments[segmentIndex].DurationMs
 				segmentIndex += 1
-				segmentIndex = segmentIndex % len(v.MasterPlaylist.MediaPlaylists[index].Segments)
+				segmentIndex = segmentIndex % len(original.Segments)
 			}
 		case strings.HasPrefix(tag, "#EXT-X-ENDLIST"):
 			continue
