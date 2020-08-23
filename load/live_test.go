@@ -17,7 +17,7 @@ func TestLoadTsLiveMediaPlaylist(t *testing.T) {
 		"#EXT-X-INDEPENDENT-SEGMENTS\n" +
 		"#EXT-X-TARGETDURATION:5\n" +
 		"#EXT-X-MEDIA-SEQUENCE:75\n" +
-		"#EXT-X-DISCONTINUITY-SEQUENCE:0\n" +
+		"#EXT-X-DISCONTINUITY-SEQUENCE:8\n" +
 		"#EXTINF:3,\n" +
 		"3.ts\n" +
 		"#EXTINF:4,\n" +
@@ -44,7 +44,7 @@ func TestLoadFmp4LiveMediaPlaylist(t *testing.T) {
 		"#EXT-X-INDEPENDENT-SEGMENTS\n" +
 		"#EXT-X-TARGETDURATION:5\n" +
 		"#EXT-X-MEDIA-SEQUENCE:75\n" +
-		"#EXT-X-DISCONTINUITY-SEQUENCE:0\n" +
+		"#EXT-X-DISCONTINUITY-SEQUENCE:8\n" +
 		"#EXTINF:3,\n" +
 		"3.mp4\n" +
 		"#EXTINF:4,\n" +
@@ -72,7 +72,7 @@ func TestLoadByteRangeLiveMediaPlaylist(t *testing.T) {
 		"#EXT-X-INDEPENDENT-SEGMENTS\n" +
 		"#EXT-X-TARGETDURATION:5\n" +
 		"#EXT-X-MEDIA-SEQUENCE:75\n" +
-		"#EXT-X-DISCONTINUITY-SEQUENCE:0\n" +
+		"#EXT-X-DISCONTINUITY-SEQUENCE:8\n" +
 		"#EXTINF:3,\n" +
 		"#EXT-X-BYTERANGE:300000@1200100\n" +
 		"0.mp4\n" +
