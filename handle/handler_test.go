@@ -32,10 +32,8 @@ var FakeHandler = Handler{
 func TestVodMasterPlaylist(t *testing.T) {
 	e := echo.New()
 	request := httptest.NewRequest(http.MethodGet, "/vod/playlist.m3u8", nil)
-	request.Header.Set(echo.HeaderContentType, MimeMpegUrl)
 	recorder := httptest.NewRecorder()
 	context := e.NewContext(request, recorder)
-	context.SetPath("/vod/playlist.m3u8")
 	handler := FakeHandler
 
 	err := handler.VodMasterPlaylist(context)
@@ -50,10 +48,8 @@ func TestVodMasterPlaylist(t *testing.T) {
 func TestVodMediaPlaylist(t *testing.T) {
 	e := echo.New()
 	request := httptest.NewRequest(http.MethodGet, "/vod/0/playlist.m3u8", nil)
-	request.Header.Set(echo.HeaderContentType, MimeMpegUrl)
 	recorder := httptest.NewRecorder()
 	context := e.NewContext(request, recorder)
-	context.SetPath("/vod/:index/playlist.m3u8")
 	context.SetParamNames("index")
 	context.SetParamValues("0")
 	handler := FakeHandler
@@ -69,11 +65,9 @@ func TestVodMediaPlaylist(t *testing.T) {
 
 func TestVodTsSegment(t *testing.T) {
 	e := echo.New()
-	request := httptest.NewRequest(http.MethodGet, "/vod/0/playlist.m3u8", nil)
-	request.Header.Set(echo.HeaderContentType, MimeMpegUrl)
+	request := httptest.NewRequest(http.MethodGet, "/vod/0/0.ts", nil)
 	recorder := httptest.NewRecorder()
 	context := e.NewContext(request, recorder)
-	context.SetPath("/vod/:index/:segment")
 	context.SetParamNames("index", "segment")
 	context.SetParamValues("0", "0.ts")
 	handler := FakeHandler
@@ -89,11 +83,9 @@ func TestVodTsSegment(t *testing.T) {
 
 func TestVodFmp4Segment(t *testing.T) {
 	e := echo.New()
-	request := httptest.NewRequest(http.MethodGet, "/vod/0/playlist.m3u8", nil)
-	request.Header.Set(echo.HeaderContentType, MimeMpegUrl)
+	request := httptest.NewRequest(http.MethodGet, "/vod/0/0.mp4", nil)
 	recorder := httptest.NewRecorder()
 	context := e.NewContext(request, recorder)
-	context.SetPath("/vod/:index/:segment")
 	context.SetParamNames("index", "segment")
 	context.SetParamValues("0", "0.mp4")
 	handler := FakeHandler
@@ -109,11 +101,9 @@ func TestVodFmp4Segment(t *testing.T) {
 
 func TestLiveMasterPlaylist(t *testing.T) {
 	e := echo.New()
-	request := httptest.NewRequest(http.MethodGet, "/vod/playlist.m3u8", nil)
-	request.Header.Set(echo.HeaderContentType, MimeMpegUrl)
+	request := httptest.NewRequest(http.MethodGet, "/live/playlist.m3u8", nil)
 	recorder := httptest.NewRecorder()
 	context := e.NewContext(request, recorder)
-	context.SetPath("/vod/playlist.m3u8")
 	handler := FakeHandler
 
 	err := handler.LiveMasterPlaylist(context)
@@ -127,11 +117,9 @@ func TestLiveMasterPlaylist(t *testing.T) {
 
 func TestLiveMediaPlaylist(t *testing.T) {
 	e := echo.New()
-	request := httptest.NewRequest(http.MethodGet, "/vod/0/playlist.m3u8", nil)
-	request.Header.Set(echo.HeaderContentType, MimeMpegUrl)
+	request := httptest.NewRequest(http.MethodGet, "/live/0/playlist.m3u8", nil)
 	recorder := httptest.NewRecorder()
 	context := e.NewContext(request, recorder)
-	context.SetPath("/vod/:index/playlist.m3u8")
 	context.SetParamNames("index")
 	context.SetParamValues("0")
 	handler := FakeHandler
@@ -147,11 +135,9 @@ func TestLiveMediaPlaylist(t *testing.T) {
 
 func TestLiveTsSegment(t *testing.T) {
 	e := echo.New()
-	request := httptest.NewRequest(http.MethodGet, "/vod/0/playlist.m3u8", nil)
-	request.Header.Set(echo.HeaderContentType, MimeMpegUrl)
+	request := httptest.NewRequest(http.MethodGet, "/live/0/0.ts", nil)
 	recorder := httptest.NewRecorder()
 	context := e.NewContext(request, recorder)
-	context.SetPath("/vod/:index/:segment")
 	context.SetParamNames("index", "segment")
 	context.SetParamValues("0", "0.ts")
 	handler := FakeHandler
@@ -167,11 +153,9 @@ func TestLiveTsSegment(t *testing.T) {
 
 func TestLiveFmp4Segment(t *testing.T) {
 	e := echo.New()
-	request := httptest.NewRequest(http.MethodGet, "/vod/0/playlist.m3u8", nil)
-	request.Header.Set(echo.HeaderContentType, MimeMpegUrl)
+	request := httptest.NewRequest(http.MethodGet, "/live/0/0.mp4", nil)
 	recorder := httptest.NewRecorder()
 	context := e.NewContext(request, recorder)
-	context.SetPath("/vod/:index/:segment")
 	context.SetParamNames("index", "segment")
 	context.SetParamValues("0", "0.mp4")
 	handler := FakeHandler
@@ -187,11 +171,9 @@ func TestLiveFmp4Segment(t *testing.T) {
 
 func TestChaseMasterPlaylist(t *testing.T) {
 	e := echo.New()
-	request := httptest.NewRequest(http.MethodGet, "/vod/playlist.m3u8", nil)
-	request.Header.Set(echo.HeaderContentType, MimeMpegUrl)
+	request := httptest.NewRequest(http.MethodGet, "/chase/playlist.m3u8", nil)
 	recorder := httptest.NewRecorder()
 	context := e.NewContext(request, recorder)
-	context.SetPath("/vod/playlist.m3u8")
 	handler := FakeHandler
 
 	err := handler.ChaseMasterPlaylist(context)
@@ -205,11 +187,9 @@ func TestChaseMasterPlaylist(t *testing.T) {
 
 func TestChaseMediaPlaylist(t *testing.T) {
 	e := echo.New()
-	request := httptest.NewRequest(http.MethodGet, "/vod/0/playlist.m3u8", nil)
-	request.Header.Set(echo.HeaderContentType, MimeMpegUrl)
+	request := httptest.NewRequest(http.MethodGet, "/chase/0/playlist.m3u8", nil)
 	recorder := httptest.NewRecorder()
 	context := e.NewContext(request, recorder)
-	context.SetPath("/vod/:index/playlist.m3u8")
 	context.SetParamNames("index")
 	context.SetParamValues("0")
 	handler := FakeHandler
@@ -225,11 +205,9 @@ func TestChaseMediaPlaylist(t *testing.T) {
 
 func TestChaseTsSegment(t *testing.T) {
 	e := echo.New()
-	request := httptest.NewRequest(http.MethodGet, "/vod/0/playlist.m3u8", nil)
-	request.Header.Set(echo.HeaderContentType, MimeMpegUrl)
+	request := httptest.NewRequest(http.MethodGet, "/chase/0/0.ts", nil)
 	recorder := httptest.NewRecorder()
 	context := e.NewContext(request, recorder)
-	context.SetPath("/vod/:index/:segment")
 	context.SetParamNames("index", "segment")
 	context.SetParamValues("0", "0.ts")
 	handler := FakeHandler
@@ -245,11 +223,9 @@ func TestChaseTsSegment(t *testing.T) {
 
 func TestChaseFmp4Segment(t *testing.T) {
 	e := echo.New()
-	request := httptest.NewRequest(http.MethodGet, "/vod/0/playlist.m3u8", nil)
-	request.Header.Set(echo.HeaderContentType, MimeMpegUrl)
+	request := httptest.NewRequest(http.MethodGet, "/chase/0/0.mp4", nil)
 	recorder := httptest.NewRecorder()
 	context := e.NewContext(request, recorder)
-	context.SetPath("/vod/:index/:segment")
 	context.SetParamNames("index", "segment")
 	context.SetParamValues("0", "0.mp4")
 	handler := FakeHandler
@@ -260,5 +236,41 @@ func TestChaseFmp4Segment(t *testing.T) {
 		assert.Equal(t, http.StatusOK, recorder.Code)
 		assert.Equal(t, MimeMP4, recorder.Header().Get(echo.HeaderContentType))
 		assert.Equal(t, "test-segment: mediaPlaylistIndex=0, segmentIndex=0", recorder.Body.String())
+	}
+}
+
+func TestM4sSegment(t *testing.T) {
+	e := echo.New()
+	request := httptest.NewRequest(http.MethodGet, "/vod/0/0.m4s", nil)
+	recorder := httptest.NewRecorder()
+	context := e.NewContext(request, recorder)
+	context.SetParamNames("index", "segment")
+	context.SetParamValues("0", "0.m4s")
+	handler := FakeHandler
+
+	err := handler.VodSegment(context)
+
+	if assert.NoError(t, err) {
+		assert.Equal(t, http.StatusOK, recorder.Code)
+		assert.Equal(t, MimeMP4, recorder.Header().Get(echo.HeaderContentType))
+		assert.Equal(t, "test-segment: mediaPlaylistIndex=0, segmentIndex=0", recorder.Body.String())
+	}
+}
+
+func TestUnknownSegment(t *testing.T) {
+	e := echo.New()
+	request := httptest.NewRequest(http.MethodGet, "/vod/0/0.aaa", nil)
+	recorder := httptest.NewRecorder()
+	context := e.NewContext(request, recorder)
+	context.SetParamNames("index", "segment")
+	context.SetParamValues("0", "0.aaa")
+	handler := FakeHandler
+
+	err := handler.VodSegment(context)
+
+	if assert.NoError(t, err) {
+		assert.Equal(t, http.StatusBadRequest, recorder.Code)
+		assert.Equal(t, echo.MIMETextPlainCharsetUTF8, recorder.Header().Get(echo.HeaderContentType))
+		assert.Equal(t, "failed to load Segment.", recorder.Body.String())
 	}
 }

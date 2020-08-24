@@ -108,10 +108,6 @@ func (h *Handler) loadSegment(loader load.Loader, c echo.Context) error {
 		contentType = MimeMP4
 	case strings.HasPrefix(segmentName[len(segmentName)-4:], media.M4FileExtensionPrefix):
 		contentType = MimeMP4
-	case strings.HasPrefix(segmentName[len(segmentName)-5:], media.Mp4FileExtensionPrefix):
-		contentType = MimeMP4
-	case strings.HasPrefix(segmentName[len(segmentName)-5:], media.CmfFileExtensionPrefix):
-		contentType = MimeMP4
 	default:
 		return c.String(http.StatusBadRequest, "failed to load Segment.")
 	}

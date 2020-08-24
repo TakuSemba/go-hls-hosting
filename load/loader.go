@@ -36,6 +36,7 @@ func (v *DefaultLoader) LoadMasterPlaylist() ([]byte, error) {
 	}
 	return masterPlaylist, nil
 }
+
 func (v *DefaultLoader) LoadSegment(mediaPlaylistIndex, segmentIndex int) ([]byte, error) {
 	mediaPlaylistPath := v.MasterPlaylist.MediaPlaylists[mediaPlaylistIndex].Path
 	segmentPath := v.MasterPlaylist.MediaPlaylists[mediaPlaylistIndex].Segments[segmentIndex].Path

@@ -163,10 +163,6 @@ func (p *Parser) ParseMediaPlaylist(path string) (MediaPlaylist, error) {
 				containerFormat = Fmp4
 			case strings.HasPrefix(line[len(line)-4:], media.M4FileExtensionPrefix):
 				containerFormat = Fmp4
-			case strings.HasPrefix(line[len(line)-5:], media.Mp4FileExtensionPrefix):
-				containerFormat = Fmp4
-			case strings.HasPrefix(line[len(line)-5:], media.CmfFileExtensionPrefix):
-				containerFormat = Fmp4
 			default:
 				return MediaPlaylist{}, errors.New("failed to extract container format: " + line)
 			}

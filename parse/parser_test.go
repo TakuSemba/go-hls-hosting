@@ -20,7 +20,7 @@ func (f *FakeFileReader) FakeReadFile(path string) ([]byte, error) {
 }
 
 func TestParseMasterPlaylist(t *testing.T) {
-	readBytes, _ := ioutil.ReadFile("../testdata/master.m3u8")
+	readBytes, _ := ioutil.ReadFile("../testdata/playlist/master.m3u8")
 	testPath := "testMasterPlaylist.m3u8"
 	fileReader := FakeFileReader{
 		expectedPath: testPath,
@@ -39,7 +39,7 @@ func TestParseMasterPlaylist(t *testing.T) {
 }
 
 func TestParseTsMediaPlaylist(t *testing.T) {
-	readBytes, _ := ioutil.ReadFile("../testdata/stream_ts.m3u8")
+	readBytes, _ := ioutil.ReadFile("../testdata/playlist/stream_ts.m3u8")
 	testPath := "testMediaPlaylist.m3u8"
 	fileReader := FakeFileReader{
 		expectedPath: testPath,
@@ -76,7 +76,7 @@ func TestParseTsMediaPlaylist(t *testing.T) {
 }
 
 func TestParseFmp4MediaPlaylist(t *testing.T) {
-	readBytes, _ := ioutil.ReadFile("../testdata/stream_fmp4.m3u8")
+	readBytes, _ := ioutil.ReadFile("../testdata/playlist/stream_fmp4.m3u8")
 	testPath := "testMediaPlaylist.m3u8"
 	fileReader := FakeFileReader{
 		expectedPath: testPath,
@@ -113,7 +113,7 @@ func TestParseFmp4MediaPlaylist(t *testing.T) {
 }
 
 func TestParseByteRangeMediaPlaylist(t *testing.T) {
-	readBytes, _ := ioutil.ReadFile("../testdata/stream_byterange.m3u8")
+	readBytes, _ := ioutil.ReadFile("../testdata/playlist/stream_byterange.m3u8")
 	testPath := "testMediaPlaylist.m3u8"
 	fileReader := FakeFileReader{
 		expectedPath: testPath,
@@ -153,7 +153,7 @@ func TestParseByteRangeMediaPlaylist(t *testing.T) {
 }
 
 func TestParseDiscontinuityMediaPlaylist(t *testing.T) {
-	readBytes, _ := ioutil.ReadFile("../testdata/stream_discontinuity.m3u8")
+	readBytes, _ := ioutil.ReadFile("../testdata/playlist/stream_discontinuity.m3u8")
 	testPath := "testMediaPlaylist.m3u8"
 	fileReader := FakeFileReader{
 		expectedPath: testPath,

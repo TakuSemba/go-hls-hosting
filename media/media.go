@@ -1,11 +1,9 @@
 package media
 
 const (
-	TsFileExtension        = ".ts"
-	Mp4FileExtension       = ".mp4"
-	M4FileExtensionPrefix  = ".m4"
-	Mp4FileExtensionPrefix = ".mp4"
-	CmfFileExtensionPrefix = ".cmf"
+	TsFileExtension       = ".ts"
+	Mp4FileExtension      = ".mp4"
+	M4FileExtensionPrefix = ".m4"
 )
 
 const (
