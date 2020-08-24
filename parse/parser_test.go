@@ -111,7 +111,7 @@ func TestParseFmp4MediaPlaylist(t *testing.T) {
 	}
 }
 
-func TestParseByterangeMediaPlaylist(t *testing.T) {
+func TestParseByteRangeMediaPlaylist(t *testing.T) {
 	readBytes, _ := ioutil.ReadFile("../testdata/stream_byterange.m3u8")
 	testPath := "testMediaPlaylist.m3u8"
 	fileReader := FakeFileReader{

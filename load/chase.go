@@ -52,7 +52,7 @@ func (v *ChaseLoader) LoadMediaPlaylist(index int) ([]byte, error) {
 		case strings.HasPrefix(tag, media.TagMediaDuration) || strings.HasPrefix(tag, media.TagByteRange):
 			segment := original.Segments[segmentIndex]
 
-			if aggregatedTimeMs+segment.DurationMs < windowDurationMs {
+			if aggregatedTimeMs+segment.DurationMs <= windowDurationMs {
 				mediaPlaylist = append(mediaPlaylist, tag...)
 				mediaPlaylist = append(mediaPlaylist, '\n')
 

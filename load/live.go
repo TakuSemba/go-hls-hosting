@@ -48,7 +48,7 @@ func (v *LiveLoader) LoadMediaPlaylist(index int) ([]byte, error) {
 	// create media playlist.
 	aggregatedTimeMs = float64(0)
 	loopCount := 0
-	for aggregatedTimeMs+original.Segments[segmentIndex].DurationMs < v.WindowDurationMs {
+	for aggregatedTimeMs+original.Segments[segmentIndex].DurationMs <= v.WindowDurationMs {
 		for _, tag := range original.Tags {
 
 			if 0 < skipMediaDurationTag && strings.HasPrefix(tag, media.TagMediaDuration) {
@@ -104,7 +104,7 @@ func (v *LiveLoader) LoadMediaPlaylist(index int) ([]byte, error) {
 			// append #EXTINF / #EXT-X-BYTERANGE.
 			case strings.HasPrefix(tag, media.TagMediaDuration) || strings.HasPrefix(tag, media.TagByteRange):
 				segment := original.Segments[segmentIndex]
-				if aggregatedTimeMs+segment.DurationMs < v.WindowDurationMs {
+				if aggregatedTimeMs+segment.DurationMs <= v.WindowDurationMs {
 					mediaPlaylist = append(mediaPlaylist, tag...)
 					mediaPlaylist = append(mediaPlaylist, '\n')
 
