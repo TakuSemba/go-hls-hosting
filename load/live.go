@@ -133,7 +133,7 @@ func (v *LiveLoader) LoadMediaPlaylist(index int) ([]byte, error) {
 			// add #EXT-X-DISCONTINUITY if segment is looped.
 			case strings.HasPrefix(tag, "#EXT-X-ENDLIST"):
 				segment := original.Segments[segmentIndex]
-				if aggregatedTimeMs+segment.DurationMs < v.WindowDurationMs {
+				if aggregatedTimeMs+segment.DurationMs <= v.WindowDurationMs {
 					mediaPlaylist = append(mediaPlaylist, media.TagDiscontinuity...)
 					mediaPlaylist = append(mediaPlaylist, '\n')
 				}

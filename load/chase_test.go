@@ -76,3 +76,29 @@ func TestLoadByteRangeChaseMediaPlaylist(t *testing.T) {
 		assert.Equal(t, trimIndent(t, mediaPlaylist), string(actual))
 	}
 }
+
+func TestLoadChaseMediaPlaylistWhenEnded(t *testing.T) {
+	loader := NewChaseLoader(FakeTsMasterPlayList)
+	loader.StartedAt = time.Now()
+	loader.InitialWindowDurationMs = 12 * 1000
+	actual, err := loader.LoadMediaPlaylist(0)
+	mediaPlaylist := `
+		#EXTM3U
+		#EXT-X-VERSION:4
+		#EXT-X-PLAYLIST-TYPE:EVENT
+		#EXT-X-INDEPENDENT-SEGMENTS
+		#EXT-X-TARGETDURATION:5
+		#EXT-X-MEDIA-SEQUENCE:0
+		#EXT-X-DISCONTINUITY-SEQUENCE:0
+		#EXTINF:3,
+		0.ts
+		#EXTINF:4,
+		1.ts
+		#EXTINF:5,
+		2.ts
+		#EXT-X-ENDLIST
+	`
+	if assert.NoError(t, err) {
+		assert.Equal(t, trimIndent(t, mediaPlaylist), string(actual))
+	}
+}
