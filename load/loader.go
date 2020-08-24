@@ -41,7 +41,7 @@ func (v *DefaultLoader) LoadSegment(mediaPlaylistIndex, segmentIndex int) ([]byt
 	segmentPath := v.MasterPlaylist.MediaPlaylists[mediaPlaylistIndex].Segments[segmentIndex].Path
 	segment, err := ioutil.ReadFile(filepath.Join(filepath.Dir(mediaPlaylistPath), segmentPath))
 	if err != nil {
-		return []byte{}, nil
+		return []byte{}, err
 	}
 	return segment, nil
 }

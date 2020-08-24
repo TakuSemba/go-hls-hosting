@@ -12,6 +12,7 @@ type FakeFileReader struct {
 }
 
 func (f *FakeFileReader) FakeReadFile(path string) ([]byte, error) {
+	// return empty bytes if path is unexpected.
 	if path != f.expectedPath {
 		return []byte{}, nil
 	}

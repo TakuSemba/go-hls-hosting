@@ -3,6 +3,7 @@ package parse
 import (
 	"bufio"
 	"bytes"
+	"errors"
 	"github.com/TakuSemba/go-hls-hosting/media"
 	"io"
 	"io/ioutil"
@@ -134,7 +135,7 @@ func (p *Parser) ParseMediaPlaylist(path string) (MediaPlaylist, error) {
 			// extract duration.
 			duration, err := strconv.ParseFloat(lastInfTag[8:len(lastInfTag)-1], 64)
 			if err != nil {
-				return MediaPlaylist{}, nil
+				return MediaPlaylist{}, err
 			}
 			durationMs := duration * 1000
 
@@ -167,7 +168,7 @@ func (p *Parser) ParseMediaPlaylist(path string) (MediaPlaylist, error) {
 			case strings.HasPrefix(line[len(line)-5:], media.CmfFileExtensionPrefix):
 				containerFormat = Fmp4
 			default:
-				return MediaPlaylist{}, nil
+				return MediaPlaylist{}, errors.New("failed to extract container format: " + line)
 			}
 
 			segment := Segment{
