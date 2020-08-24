@@ -8,8 +8,8 @@ import (
 
 func TestLoadTsChaseMediaPlaylist(t *testing.T) {
 	loader := NewChaseLoader(FakeTsMasterPlayList)
-	loader.StartedAt = time.Now().Add(time.Duration(-4 * 1000 * 1000 * 1000))
-	loader.InitialWindowDurationMs = 3 * 1000
+	loader.StartedAt = time.Now()
+	loader.InitialWindowDurationMs = 7 * 1000
 	actual, err := loader.LoadMediaPlaylist(0)
 	mediaPlaylist := `
 		#EXTM3U
@@ -31,8 +31,8 @@ func TestLoadTsChaseMediaPlaylist(t *testing.T) {
 
 func TestLoadFmp4ChaseMediaPlaylist(t *testing.T) {
 	loader := NewChaseLoader(FakeFmp4MasterPlayList)
-	loader.StartedAt = time.Now().Add(time.Duration(-4 * 1000 * 1000 * 1000))
-	loader.InitialWindowDurationMs = 3 * 1000
+	loader.StartedAt = time.Now()
+	loader.InitialWindowDurationMs = 7 * 1000
 	actual, err := loader.LoadMediaPlaylist(0)
 	mediaPlaylist := `
 		#EXTM3U
@@ -54,8 +54,8 @@ func TestLoadFmp4ChaseMediaPlaylist(t *testing.T) {
 
 func TestLoadByteRangeChaseMediaPlaylist(t *testing.T) {
 	loader := NewChaseLoader(FakeByteRangeMasterPlayList)
-	loader.StartedAt = time.Now().Add(time.Duration(-4 * 1000 * 1000 * 1000))
-	loader.InitialWindowDurationMs = 3 * 1000
+	loader.StartedAt = time.Now()
+	loader.InitialWindowDurationMs = 7 * 1000
 	actual, err := loader.LoadMediaPlaylist(0)
 	mediaPlaylist := `
 		#EXTM3U

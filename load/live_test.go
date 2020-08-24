@@ -8,7 +8,7 @@ import (
 
 func TestLoadTsLiveMediaPlaylist(t *testing.T) {
 	loader := NewLiveLoader(FakeTsMasterPlayList)
-	loader.StartedAt = time.Now().Add(time.Duration(-3 * 1000 * 1000 * 1000))
+	loader.StartedAt = time.Now().Add(time.Duration(-3) * time.Second)
 	loader.WindowDurationMs = 9 * 1000
 	actual, err := loader.LoadMediaPlaylist(0)
 	mediaPlaylist := `
@@ -31,7 +31,7 @@ func TestLoadTsLiveMediaPlaylist(t *testing.T) {
 
 func TestLoadFmp4LiveMediaPlaylist(t *testing.T) {
 	loader := NewLiveLoader(FakeFmp4MasterPlayList)
-	loader.StartedAt = time.Now().Add(time.Duration(-3 * 1000 * 1000 * 1000))
+	loader.StartedAt = time.Now().Add(time.Duration(-3) * time.Second)
 	loader.WindowDurationMs = 9 * 1000
 	actual, err := loader.LoadMediaPlaylist(0)
 	mediaPlaylist := `
@@ -54,7 +54,7 @@ func TestLoadFmp4LiveMediaPlaylist(t *testing.T) {
 
 func TestLoadByteRangeLiveMediaPlaylist(t *testing.T) {
 	loader := NewLiveLoader(FakeByteRangeMasterPlayList)
-	loader.StartedAt = time.Now().Add(time.Duration(-3 * 1000 * 1000 * 1000))
+	loader.StartedAt = time.Now().Add(time.Duration(-3) * time.Second)
 	loader.WindowDurationMs = 9 * 1000
 	actual, err := loader.LoadMediaPlaylist(0)
 	mediaPlaylist := `
@@ -79,7 +79,7 @@ func TestLoadByteRangeLiveMediaPlaylist(t *testing.T) {
 
 func TestLoadLiveMediaPlaylistWhenExceeded(t *testing.T) {
 	loader := NewLiveLoader(FakeTsMasterPlayList)
-	loader.StartedAt = time.Now().Add(time.Duration(-7 * 1000 * 1000 * 1000))
+	loader.StartedAt = time.Now().Add(time.Duration(-7) * time.Second)
 	loader.WindowDurationMs = 8 * 1000
 	actual, err := loader.LoadMediaPlaylist(0)
 	mediaPlaylist := `
@@ -103,7 +103,7 @@ func TestLoadLiveMediaPlaylistWhenExceeded(t *testing.T) {
 
 func TestLoadLiveMediaPlaylistWhenLooped(t *testing.T) {
 	loader := NewLiveLoader(FakeTsMasterPlayList)
-	loader.StartedAt = time.Now().Add(time.Duration(-12 * 1000 * 1000 * 1000))
+	loader.StartedAt = time.Now().Add(time.Duration(-12) * time.Second)
 	loader.WindowDurationMs = 7 * 1000
 	actual, err := loader.LoadMediaPlaylist(0)
 	mediaPlaylist := `
