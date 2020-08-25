@@ -4,7 +4,7 @@
 ![release](https://github.com/TakuSemba/go-hls-hosting/workflows/release/badge.svg)
 
 
-**go-hls-hosting** generates **LIVE**, **CHASE** playlists from your given **VOD** playlist, and allows you to access to those **VOD**, **LIVE**, **CHASE** playlists individually.
+**go-hls-hosting** generates **LIVE**, **CHASE** playlists from your given **VOD** playlist, and allows you to access those **VOD**, **LIVE**, **CHASE** playlists individually.
 
 <img src="https://github.com/TakuSemba/go-hls-hosting/blob/master/assets/overview.gif" alt="alt text" width="1000">
 
